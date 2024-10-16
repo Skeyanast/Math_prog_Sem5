@@ -32,7 +32,8 @@ partial class Form1
         // 
         // Form1
         // 
-        ClientSize = new Size(624, 441);
+        ClientSize = new Size(784, 561);
+        FormBorderStyle = FormBorderStyle.FixedSingle;
         Name = "Form1";
         Text = "Arcanoid";
         ResumeLayout(false);

@@ -4,20 +4,20 @@ internal class Ball
 {
     private int _id;
     private Point _speed;
-    private Point _lastSpeed;
     private PictureBox _pictureBox;
     private System.Windows.Forms.Timer _timer;
+
+    public event EventHandler OnTimerTick;
 
     public Ball(int id, Point position, Size size, Point speed)
     {
         _id = id;
+        _pictureBox = new PictureBox();
+        _timer = new System.Windows.Forms.Timer();
         Position = position;
         Size = size;
         _speed = speed;
-        _lastSpeed = speed;
-        _pictureBox = new PictureBox();
         StartInitializePictureBox();
-        _timer = new System.Windows.Forms.Timer();
         InitializeTimer();
         EndInitializePictureBox();
     }
@@ -35,15 +35,7 @@ internal class Ball
     public Point Speed
     {
         get => _speed;
-        set
-        {
-            _speed = value;
-            _lastSpeed = _speed;
-        }
-    }
-    public Point LastSpeed
-    {
-        get => _lastSpeed;
+        set => _speed = value;
     }
     public PictureBox PictureBox
     {
@@ -61,7 +53,7 @@ internal class Ball
         ((System.ComponentModel.ISupportInitialize)_pictureBox).BeginInit();
         _pictureBox.Image = Properties.Resources.pngwing_com2;
         _pictureBox.Location = Position;
-        _pictureBox.Name = $"_ballPictureBox{Guid.NewGuid()}";
+        _pictureBox.Name = $"_ballPictureBox{_id}";
         _pictureBox.Size = Size;
         _pictureBox.SizeMode = PictureBoxSizeMode.AutoSize;
         _pictureBox.TabIndex = _id;
@@ -82,5 +74,16 @@ internal class Ball
     private void _timer_Tick(object? sender, EventArgs e)
     {
         Position = new Point(Position.X + _speed.X, Position.Y + _speed.Y);
+        OnTimerTick(this, EventArgs.Empty);
+    }
+
+    public void StartMovement()
+    {
+        _timer.Start();
+    }
+
+    public void StopMovement()
+    {
+        _timer.Stop();
     }
 }
