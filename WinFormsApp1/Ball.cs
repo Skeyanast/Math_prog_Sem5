@@ -2,12 +2,12 @@
 
 internal class Ball
 {
-    private int _id;
+    private readonly int _id;
     private Point _speed;
     private PictureBox _pictureBox;
     private System.Windows.Forms.Timer _timer;
 
-    public event EventHandler OnTimerTick;
+    public event EventHandler? OnTimerTick;
 
     public Ball(int id, Point position, Size size, Point speed)
     {
@@ -74,7 +74,7 @@ internal class Ball
     private void _timer_Tick(object? sender, EventArgs e)
     {
         Position = new Point(Position.X + _speed.X, Position.Y + _speed.Y);
-        OnTimerTick(this, EventArgs.Empty);
+        OnTimerTick?.Invoke(this, EventArgs.Empty);
     }
 
     public void StartMovement()

@@ -8,7 +8,8 @@ namespace WinFormsApp1;
 internal class MainViewModel : INotifyPropertyChanged
 {
     private static int _ballId = 0;
-    private bool _isPlaying;
+    private int _bounceCount = 0;
+    private bool _isPlaying = false;
     private Rectangle _formBounds;
     private string _startStopText = "Start";
 
@@ -36,6 +37,22 @@ internal class MainViewModel : INotifyPropertyChanged
         get => _formBounds;
         private set => _formBounds = value;
     }
+    public int BallsCount
+    {
+        get => Balls.Count;
+    }
+    public int BounceCount
+    {
+        get => _bounceCount;
+        private set
+        {
+            if (_bounceCount != value)
+            {
+                _bounceCount = value;
+                OnPropertyChanged();
+            }
+        }
+    }
 
     public MainViewModel(ControlCollection controlCollection, Rectangle formBounds)
     {
@@ -48,39 +65,46 @@ internal class MainViewModel : INotifyPropertyChanged
 
         StartStopCommand = new MainCommand(_ =>
         {
-            _isPlaying = !_isPlaying;
-            if (_isPlaying)
-            {
-                StartStopText = "Stop";
-                foreach (Ball ball in Balls)
-                {
-                    ball.StartMovement();
-                }
-            }
-            else
-            {
-                StartStopText = "Start";
-                foreach (Ball ball in Balls)
-                {
-                    ball.StopMovement();
-                }
-            }
+            TogglePlaying();
         });
 
         AddCommand = new MainCommand(_ =>
         {
-            CreateNewBall(new Point(200, 200), new Size(100, 100), new Point(10, -10), _isPlaying);
+            if (_ballId % 2 == 0)
+            {
+                CreateNewBall(new Point(200, 200), new Size(100, 100), new Point(10, -10), _isPlaying);
+            }
+            else
+            {
+                CreateNewBall(new Point(600, 200), new Size(100, 100), new Point(-10, -10), _isPlaying);
+            }
         });
 
         RemoveCommand = new MainCommand(_ =>
         {
-            if (Balls.Count > 1)
-            {
-                Ball ball = Balls[^1];
-                Balls.RemoveAt(Balls.Count - 1);
-                BallsControlCollection.RemoveAt(controlCollection.Count - 1);
-            }
+            RemoveBall();
         });
+    }
+
+    private void TogglePlaying()
+    {
+        _isPlaying = !_isPlaying;
+        if (_isPlaying)
+        {
+            StartStopText = "Stop";
+            foreach (Ball ball in Balls)
+            {
+                ball.StartMovement();
+            }
+        }
+        else
+        {
+            StartStopText = "Start";
+            foreach (Ball ball in Balls)
+            {
+                ball.StopMovement();
+            }
+        }
     }
 
     private void CreateNewBall(Point position, Size size, Point speed, bool isMoving = false)
@@ -91,12 +115,25 @@ internal class MainViewModel : INotifyPropertyChanged
             size,
             speed
         );
-        newBall.OnTimerTick += CheckCollisionsWithBorders;
+        newBall.OnTimerTick += ProcessCollisionsWithBorders;
         Balls.Add(newBall);
         BallsControlCollection.Add(newBall.PictureBox);
+        OnPropertyChanged(nameof(BallsCount));
         if (isMoving)
         {
             newBall.StartMovement();
+        }
+    }
+
+    private void RemoveBall()
+    {
+        if (BallsCount > 0)
+        {
+            Ball ball = Balls[^1];
+            ball.OnTimerTick -= ProcessCollisionsWithBorders;
+            Balls.RemoveAt(Balls.Count - 1);
+            BallsControlCollection.RemoveAt(BallsControlCollection.Count - 1);
+            OnPropertyChanged(nameof(BallsCount));
         }
     }
 
@@ -105,18 +142,20 @@ internal class MainViewModel : INotifyPropertyChanged
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
     }
 
-    private void CheckCollisionsWithBorders(object? sender, EventArgs e)
+    private void ProcessCollisionsWithBorders(object? sender, EventArgs e)
     {
         if (sender is Ball ball)
         {
             if ((ball.Position.X <= FormBounds.Left) || (ball.Position.X + ball.Size.Width >= FormBounds.Right))
             {
                 ball.Speed = new Point(ball.Speed.X * (-1), ball.Speed.Y);
+                BounceCount++;
             }
 
             if ((ball.Position.Y <= FormBounds.Top) || (ball.Position.Y + ball.Size.Height >= FormBounds.Bottom))
             {
                 ball.Speed = new Point(ball.Speed.X, ball.Speed.Y * (-1));
+                BounceCount++;
             }
         }
     }
