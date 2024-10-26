@@ -1,58 +1,107 @@
-﻿namespace WinFormsApp1;
+﻿using System.ComponentModel;
+
+namespace WinFormsApp1;
 
 public partial class Form1 : Form
 {
+    private CalculatorViewModel _viewModel;
+    private TextBox _expressionTextBox;
+    private TableLayoutPanel _inputTableLayoutPanel;
+    private BindingList<InputButton> _inputButtons;
+
     public Form1()
     {
         InitializeComponent();
 
-        Panel ballsPanel = new Panel { Padding = new Padding(10) };
-        ballsPanel.Dock = DockStyle.Fill;
-        Controls.Add(ballsPanel);
+        _viewModel = new CalculatorViewModel();
+        _inputButtons = _viewModel.InputButtons;
 
-        ToolStrip toolStrip = new ToolStrip { Padding = new Padding(5) };
-        toolStrip.Font = new Font(toolStrip.Font.FontFamily, 12f);
-        toolStrip.Dock = DockStyle.Bottom;
-        toolStrip.LayoutStyle = ToolStripLayoutStyle.HorizontalStackWithOverflow;
-        toolStrip.CanOverflow = true;
-        toolStrip.Stretch = true;
+        InitializeExpressionTextBox(out _expressionTextBox);
+        InitializeInputTableLayoutPanel(6, 5, out _inputTableLayoutPanel);
+    }
 
-        ToolStripButton startStopButton = new ToolStripButton { Text = "Start" };
-        startStopButton.DisplayStyle = ToolStripItemDisplayStyle.Text;
-        toolStrip.Items.Add(startStopButton);
-        ToolStripButton addBallButton = new ToolStripButton { Text = "Add Ball" };
-        addBallButton.DisplayStyle = ToolStripItemDisplayStyle.Text;
-        toolStrip.Items.Add(addBallButton);
-        ToolStripButton removeBallButton = new ToolStripButton { Text = "Remove Ball" };
-        removeBallButton.DisplayStyle = ToolStripItemDisplayStyle.Text;
-        toolStrip.Items.Add(removeBallButton);
-        Controls.Add(toolStrip);
-        
-        StatusStrip statusStrip = new StatusStrip { Padding = new Padding(5) };
-        statusStrip.Dock = DockStyle.Bottom;
-        statusStrip.LayoutStyle = ToolStripLayoutStyle.HorizontalStackWithOverflow;
+    private void InitializeExpressionTextBox(out TextBox expressionTextBox)
+    {
+        expressionTextBox = new TextBox();
+        expressionTextBox.Dock = DockStyle.Top;
+        expressionTextBox.TabIndex = 0;
+        expressionTextBox.TextAlign = HorizontalAlignment.Right;
 
-        ToolStripLabel ballsCountLabel = new ToolStripLabel { Text = "Ball count: 0" };
-        statusStrip.Items.Add(ballsCountLabel);
-        ToolStripLabel bounceCountLabel = new ToolStripLabel { Text = "Bounces count: 0" };
-        statusStrip.Items.Add(bounceCountLabel);
-        Controls.Add(statusStrip);
+        Controls.Add(expressionTextBox);
 
-        DataContext = new MainViewModel(ballsPanel.Controls, ballsPanel.Bounds);
+        expressionTextBox.DataBindings.Add(new Binding(nameof(expressionTextBox.Text), _viewModel, nameof(_viewModel.Expression), true, DataSourceUpdateMode.OnPropertyChanged));
+    }
 
-        startStopButton.DataBindings.Add(new Binding(nameof(startStopButton.Command), DataContext, "StartStopCommand", true));
-        startStopButton.DataBindings.Add(new Binding(nameof(startStopButton.Text), DataContext, "StartStopText", true, DataSourceUpdateMode.OnPropertyChanged));
+    private void InitializeInputTableLayoutPanel(in int rowCount, in int columnCount, out TableLayoutPanel inputTableLayoutPanel)
+    {
+        inputTableLayoutPanel = new TableLayoutPanel();
+        inputTableLayoutPanel.Dock = DockStyle.Bottom;
+        inputTableLayoutPanel.RowCount = rowCount;
+        inputTableLayoutPanel.ColumnCount = columnCount;
+        for (int i = 0; i < inputTableLayoutPanel.ColumnCount; i++)
+        {
+            inputTableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, inputTableLayoutPanel.Width / inputTableLayoutPanel.ColumnCount));
+        }
+        for (int i = 0; i < inputTableLayoutPanel.RowCount; i++)
+        {
+            inputTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, inputTableLayoutPanel.Height / inputTableLayoutPanel.RowCount));
+        }
+        inputTableLayoutPanel.Height = (int)Math.Round(Height * 0.8);
+        inputTableLayoutPanel.TabIndex = 1;
 
-        addBallButton.DataBindings.Add(new Binding(nameof(addBallButton.Command), DataContext, "AddCommand", true));
+        int buttonNumber = 0;
+        for (int i = 0; i < inputTableLayoutPanel.RowCount; i++)
+        {
+            for (int j = 0; j < inputTableLayoutPanel.ColumnCount; j++)
+            {
+                if ((i == 4) && (j == 1))
+                {
+                    continue;
+                }
+                else if ((i == 4) && (j == 3))
+                {
+                    continue;
+                }
+                InitializeInputButton(buttonNumber, j, i);
+                buttonNumber++;
+            }
+        }
 
-        removeBallButton.DataBindings.Add(new Binding(nameof(removeBallButton.Command), DataContext, "RemoveCommand", true));
+        Controls.Add(inputTableLayoutPanel);
+    }
 
-        Binding ballsCountBinding = new Binding(nameof(ballsCountLabel.Text), DataContext, "BallsCount", true, DataSourceUpdateMode.OnPropertyChanged);
-        ballsCountBinding.Format += (sender, e) => e.Value = $"Balls count: {e.Value}";
-        ballsCountLabel.DataBindings.Add(ballsCountBinding);
-
-        Binding bounceCountBinding = new Binding(nameof(bounceCountLabel.Text), DataContext, "BounceCount", true, DataSourceUpdateMode.OnPropertyChanged);
-        bounceCountBinding.Format += (sender, e) => e.Value = $"Bounces count: {e.Value}";
-        bounceCountLabel.DataBindings.Add(bounceCountBinding);
+    private void InitializeInputButton(in int buttonNumber, in int column, in int row)
+    {
+        InputButton inputButton = _inputButtons[buttonNumber];
+        Button button = inputButton.Button;
+        try
+        {
+            switch (inputButton.Type)
+            {
+                case ButtonType.Number:
+                    button.DataBindings.Add(new Binding(nameof(button.Command), _viewModel, nameof(_viewModel.NumberButtonCommand), true));
+                    button.DataBindings.Add(new Binding(nameof(button.CommandParameter), button, nameof(button.Text)));
+                    break;
+                case ButtonType.BaseOperation:
+                    button.DataBindings.Add(new Binding(nameof(button.Command), _viewModel, nameof(_viewModel.BaseOperationButtonCommand), true));
+                    button.DataBindings.Add(new Binding(nameof(button.CommandParameter), button, nameof(button.Text)));
+                    break;
+                case ButtonType.SpecialOperation:
+                    button.DataBindings.Add(new Binding(nameof(button.Command), _viewModel, nameof(_viewModel.SpecialOperationButtonCommand), true));
+                    button.DataBindings.Add(new Binding(nameof(button.CommandParameter), button, nameof(button.Text)));
+                    break;
+                case ButtonType.Functional:
+                    button.DataBindings.Add(new Binding(nameof(button.Command), _viewModel, nameof(_viewModel.FunctionalButtonCommand), true));
+                    button.DataBindings.Add(new Binding(nameof(button.CommandParameter), button, nameof(button.Text)));
+                    break;
+                default:
+                    throw new Exception("Ошибка в типе кнопки");
+            }
+            _inputTableLayoutPanel.Controls.Add(button, column, row);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Ошибка при инициализации кнопки: {ex.Message}");
+        }
     }
 }

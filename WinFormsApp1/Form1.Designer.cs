@@ -32,10 +32,12 @@ partial class Form1
         // 
         // Form1
         // 
-        ClientSize = new Size(784, 561);
+        ClientSize = new Size(584, 561);
+        Font = new Font("Cascadia Code", 20.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
         FormBorderStyle = FormBorderStyle.FixedSingle;
         Name = "Form1";
-        Text = "Arcanoid";
+        Padding = new Padding(10);
+        Text = "Scientific Calculator";
         ResumeLayout(false);
     }
 
