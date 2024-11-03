@@ -2,13 +2,13 @@
 
 namespace WinFormsApp1;
 
-internal class CalculatorCommand : ICommand
+internal class MainCommand : ICommand
 {
     private readonly Action<object?> _action;
     
     public event EventHandler? CanExecuteChanged;
 
-    public CalculatorCommand(Action<object?> action)
+    public MainCommand(Action<object?> action)
     {
         _action = action;
     }
