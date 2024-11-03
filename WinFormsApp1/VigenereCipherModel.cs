@@ -18,9 +18,6 @@ internal static class VigenereCipherModel
 
     public static string Encrypt(string plaintext, string key)
     {
-        plaintext = plaintext.ToUpper();
-        key = key.ToUpper();
-
         string result = "";
         int key_index = 0;
 
@@ -46,9 +43,6 @@ internal static class VigenereCipherModel
 
     public static string Decrypt(string ciphertext, string key)
     {
-        ciphertext = ciphertext.ToUpper();
-        key = key.ToUpper();
-
         string result = "";
         int keyword_index = 0;
 
