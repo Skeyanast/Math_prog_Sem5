@@ -14,7 +14,7 @@ internal static class VigenereCipherModel
         'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
         ' ', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'
     };
-    private static readonly int _alphabetPower = s_alphabet.Length;
+    private static readonly int s_alphabetPower = s_alphabet.Length;
 
     public static string Encrypt(string plaintext, string key)
     {
@@ -25,7 +25,7 @@ internal static class VigenereCipherModel
         {
             if (s_alphabet.Contains(symbol))
             {
-                int encodedSymbol = (Array.IndexOf(s_alphabet, symbol) + Array.IndexOf(s_alphabet, key[key_index])) % _alphabetPower;
+                int encodedSymbol = (Array.IndexOf(s_alphabet, symbol) + Array.IndexOf(s_alphabet, key[key_index])) % s_alphabetPower;
                 result += s_alphabet[encodedSymbol];
             }
             else
@@ -50,7 +50,7 @@ internal static class VigenereCipherModel
         {
             if (s_alphabet.Contains(symbol))
             {
-                int decodedSymbol = (Array.IndexOf(s_alphabet, symbol) + _alphabetPower - Array.IndexOf(s_alphabet, key[keyword_index])) % _alphabetPower;
+                int decodedSymbol = (Array.IndexOf(s_alphabet, symbol) + s_alphabetPower - Array.IndexOf(s_alphabet, key[keyword_index])) % s_alphabetPower;
                 result += s_alphabet[decodedSymbol];
             }
             else

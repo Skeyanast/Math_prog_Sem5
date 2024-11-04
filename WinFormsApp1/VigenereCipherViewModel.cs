@@ -9,7 +9,6 @@ internal class VigenereCipherViewModel : INotifyPropertyChanged
     private string _input = "";
     private string _key = "";
     private string _result = "";
-    private string _buffer = "";
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -44,13 +43,18 @@ internal class VigenereCipherViewModel : INotifyPropertyChanged
         get => _result;
         private set
         {
-            _result = value;
-            OnPropertyChanged();
+            if (_result != value)
+            {
+                _result = value;
+                OnPropertyChanged();
+            }
         }
     }
 
     public ICommand ProcessButtonCommand { get; private set; }
+
     public ICommand EnterEncodeModeCommand { get; private set; }
+
     public ICommand EnterDecodeModeCommand { get; private set; }
 
     public VigenereCipherViewModel()
