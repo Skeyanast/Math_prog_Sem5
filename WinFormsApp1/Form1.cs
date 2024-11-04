@@ -4,10 +4,11 @@ namespace WinFormsApp1;
 
 public partial class Form1 : Form
 {
-    private CalculatorViewModel _viewModel;
-    private TextBox _expressionTextBox;
-    private TableLayoutPanel _inputTableLayoutPanel;
-    private BindingList<InputButton> _inputButtons;
+    private readonly CalculatorViewModel _viewModel;
+
+    private readonly TextBox _expressionTextBox;
+    private readonly TableLayoutPanel _inputTableLayoutPanel;
+    private readonly BindingList<InputButton> _inputButtons;
 
     public Form1()
     {

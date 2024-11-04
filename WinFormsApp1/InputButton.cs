@@ -10,13 +10,15 @@ internal class InputButton
     public Button Button
     {
         get => _button;
-        set => _button = value;
+        private set => _button = value;
     }
+
     public bool CanPressed
     {
         get => _canPressed;
         set => _canPressed = value;
     }
+
     public ButtonType Type
     {
         get => _type;

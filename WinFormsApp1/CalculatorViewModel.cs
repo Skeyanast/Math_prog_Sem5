@@ -7,7 +7,7 @@ namespace WinFormsApp1;
 
 internal class CalculatorViewModel : INotifyPropertyChanged
 {
-    private static int _id = 0;
+    private static int s_id = 0;
     private double _memory = 0;
     private string _expression = "0";
 
@@ -17,6 +17,7 @@ internal class CalculatorViewModel : INotifyPropertyChanged
     public event PropertyChangedEventHandler? PropertyChanged;
 
     public BindingList<InputButton> InputButtons { get; }
+
     public double Memory
     {
         get => _memory;
@@ -29,6 +30,7 @@ internal class CalculatorViewModel : INotifyPropertyChanged
             }
         }
     }
+
     public string Expression
     {
         get => _expression;
@@ -46,44 +48,46 @@ internal class CalculatorViewModel : INotifyPropertyChanged
         }
     }
 
-
     public ICommand NumberButtonCommand { get; set; }
+
     public ICommand BaseOperationButtonCommand { get; set; }
+
     public ICommand SpecialOperationButtonCommand { get; set; }
+
     public ICommand FunctionalButtonCommand { get; set; }
 
     public CalculatorViewModel()
     {
         InputButtons = new BindingList<InputButton>
         {
-            new InputButton(_id++, "sin", ButtonType.SpecialOperation),
-            new InputButton(_id++, "exp", ButtonType.SpecialOperation),
-            new InputButton(_id++, "x\u00B2", ButtonType.SpecialOperation),//x²
-            new InputButton(_id++, "CE", ButtonType.Functional),
-            new InputButton(_id++, "<<", ButtonType.Functional),
-            new InputButton(_id++, "cos", ButtonType.SpecialOperation),
-            new InputButton(_id++, "7", ButtonType.Number),
-            new InputButton(_id++, "8", ButtonType.Number),
-            new InputButton(_id++, "9", ButtonType.Number),
-            new InputButton(_id++, "/", ButtonType.BaseOperation),
-            new InputButton(_id++, "tan", ButtonType.SpecialOperation),
-            new InputButton(_id++, "4", ButtonType.Number),
-            new InputButton(_id++, "5", ButtonType.Number),
-            new InputButton(_id++, "6", ButtonType.Number),
-            new InputButton(_id++, "*", ButtonType.BaseOperation),
-            new InputButton(_id++, "tanh", ButtonType.SpecialOperation),
-            new InputButton(_id++, "1", ButtonType.Number),
-            new InputButton(_id++, "2", ButtonType.Number),
-            new InputButton(_id++, "3", ButtonType.Number),
-            new InputButton(_id++, "-", ButtonType.BaseOperation),
-            new InputButton(_id++, "log10", ButtonType.SpecialOperation),
-            new InputButton(_id++, "0", ButtonType.Number),
-            new InputButton(_id++, "+", ButtonType.BaseOperation),
-            new InputButton(_id++, "ln", ButtonType.SpecialOperation),
-            new InputButton(_id++, "MRC", ButtonType.Functional),
-            new InputButton(_id++, "M+", ButtonType.Functional),
-            new InputButton(_id++, "M-", ButtonType.Functional),
-            new InputButton(_id++, "=", ButtonType.Functional),
+            new InputButton(s_id++, "sin", ButtonType.SpecialOperation),
+            new InputButton(s_id++, "exp", ButtonType.SpecialOperation),
+            new InputButton(s_id++, "x\u00B2", ButtonType.SpecialOperation), // x²
+            new InputButton(s_id++, "CE", ButtonType.Functional),
+            new InputButton(s_id++, "<<", ButtonType.Functional),
+            new InputButton(s_id++, "cos", ButtonType.SpecialOperation),
+            new InputButton(s_id++, "7", ButtonType.Number),
+            new InputButton(s_id++, "8", ButtonType.Number),
+            new InputButton(s_id++, "9", ButtonType.Number),
+            new InputButton(s_id++, "/", ButtonType.BaseOperation),
+            new InputButton(s_id++, "tan", ButtonType.SpecialOperation),
+            new InputButton(s_id++, "4", ButtonType.Number),
+            new InputButton(s_id++, "5", ButtonType.Number),
+            new InputButton(s_id++, "6", ButtonType.Number),
+            new InputButton(s_id++, "*", ButtonType.BaseOperation),
+            new InputButton(s_id++, "tanh", ButtonType.SpecialOperation),
+            new InputButton(s_id++, "1", ButtonType.Number),
+            new InputButton(s_id++, "2", ButtonType.Number),
+            new InputButton(s_id++, "3", ButtonType.Number),
+            new InputButton(s_id++, "-", ButtonType.BaseOperation),
+            new InputButton(s_id++, "log10", ButtonType.SpecialOperation),
+            new InputButton(s_id++, "0", ButtonType.Number),
+            new InputButton(s_id++, "+", ButtonType.BaseOperation),
+            new InputButton(s_id++, "ln", ButtonType.SpecialOperation),
+            new InputButton(s_id++, "MRC", ButtonType.Functional),
+            new InputButton(s_id++, "M+", ButtonType.Functional),
+            new InputButton(s_id++, "M-", ButtonType.Functional),
+            new InputButton(s_id++, "=", ButtonType.Functional),
         };
 
         NumberButtonCommand = new CalculatorCommand(obj =>
@@ -311,7 +315,7 @@ internal class CalculatorViewModel : INotifyPropertyChanged
         });
     }
 
-    private bool IsValidExpression(string expression)
+    private static bool IsValidExpression(string expression)
     {
         return !string.IsNullOrEmpty(expression);
     }
