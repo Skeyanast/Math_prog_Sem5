@@ -7,7 +7,7 @@ namespace WinFormsApp1;
 
 internal class MainViewModel : INotifyPropertyChanged
 {
-    private static int _ballId = 0;
+    private static int s_ballId = 0;
     private int _bounceCount = 0;
     private bool _isPlaying = false;
     private Rectangle _formBounds;
@@ -16,10 +16,15 @@ internal class MainViewModel : INotifyPropertyChanged
     public event PropertyChangedEventHandler? PropertyChanged;
 
     public ICommand StartStopCommand { get; set; }
+
     public ICommand AddCommand { get; set; }
+
     public ICommand RemoveCommand { get; set; }
-    public BindingList<Ball> Balls { get; }
+
+    public BindingList<BallModel> Balls { get; }
+
     public ControlCollection BallsControlCollection { get; }
+
     public string StartStopText
     {
         get => _startStopText;
@@ -32,15 +37,18 @@ internal class MainViewModel : INotifyPropertyChanged
             }
         }
     }
+
     public Rectangle FormBounds
     {
         get => _formBounds;
         private set => _formBounds = value;
     }
+
     public int BallsCount
     {
         get => Balls.Count;
     }
+
     public int BounceCount
     {
         get => _bounceCount;
@@ -54,14 +62,14 @@ internal class MainViewModel : INotifyPropertyChanged
         }
     }
 
-    public MainViewModel(ControlCollection controlCollection, Rectangle formBounds)
+    public MainViewModel(ControlCollection ballsContainerControlCollection, Rectangle ballsContainerBounds)
     {
-        Balls = new BindingList<Ball>();
-        BallsControlCollection = controlCollection;
+        Balls = new BindingList<BallModel>();
+        BallsControlCollection = ballsContainerControlCollection;
 
         CreateNewBall(new Point(200, 200), new Size(100, 100), new Point(10, -10), _isPlaying);
 
-        FormBounds = formBounds;
+        FormBounds = ballsContainerBounds;
 
         StartStopCommand = new MainCommand(_ =>
         {
@@ -70,7 +78,7 @@ internal class MainViewModel : INotifyPropertyChanged
 
         AddCommand = new MainCommand(_ =>
         {
-            if (_ballId % 2 == 0)
+            if (s_ballId % 2 == 0)
             {
                 CreateNewBall(new Point(200, 200), new Size(100, 100), new Point(10, -10), _isPlaying);
             }
@@ -92,7 +100,7 @@ internal class MainViewModel : INotifyPropertyChanged
         if (_isPlaying)
         {
             StartStopText = "Stop";
-            foreach (Ball ball in Balls)
+            foreach (BallModel ball in Balls)
             {
                 ball.StartMovement();
             }
@@ -100,7 +108,7 @@ internal class MainViewModel : INotifyPropertyChanged
         else
         {
             StartStopText = "Start";
-            foreach (Ball ball in Balls)
+            foreach (BallModel ball in Balls)
             {
                 ball.StopMovement();
             }
@@ -109,8 +117,8 @@ internal class MainViewModel : INotifyPropertyChanged
 
     private void CreateNewBall(Point position, Size size, Point speed, bool isMoving = false)
     {
-        Ball newBall = new Ball(
-            _ballId++,
+        BallModel newBall = new BallModel(
+            s_ballId++,
             position,
             size,
             speed
@@ -129,7 +137,7 @@ internal class MainViewModel : INotifyPropertyChanged
     {
         if (BallsCount > 0)
         {
-            Ball ball = Balls[^1];
+            BallModel ball = Balls[^1];
             ball.OnTimerTick -= ProcessCollisionsWithBorders;
             Balls.RemoveAt(Balls.Count - 1);
             BallsControlCollection.RemoveAt(BallsControlCollection.Count - 1);
@@ -137,26 +145,26 @@ internal class MainViewModel : INotifyPropertyChanged
         }
     }
 
-    private void OnPropertyChanged([CallerMemberName] string prop = "")
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-    }
-
     private void ProcessCollisionsWithBorders(object? sender, EventArgs e)
     {
-        if (sender is Ball ball)
+        if (sender is BallModel ball)
         {
             if ((ball.Position.X <= FormBounds.Left) || (ball.Position.X + ball.Size.Width >= FormBounds.Right))
             {
-                ball.Speed = new Point(ball.Speed.X * (-1), ball.Speed.Y);
+                ball.Speed = new Point(-ball.Speed.X, ball.Speed.Y);
                 BounceCount++;
             }
 
             if ((ball.Position.Y <= FormBounds.Top) || (ball.Position.Y + ball.Size.Height >= FormBounds.Bottom))
             {
-                ball.Speed = new Point(ball.Speed.X, ball.Speed.Y * (-1));
+                ball.Speed = new Point(ball.Speed.X, -ball.Speed.Y);
                 BounceCount++;
             }
         }
+    }
+
+    private void OnPropertyChanged([CallerMemberName] string propertyName = "")
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }
