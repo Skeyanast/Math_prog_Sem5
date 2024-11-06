@@ -33,7 +33,7 @@ partial class Form1
         // Form1
         // 
         ClientSize = new Size(784, 561);
-        Font = new Font("Cascadia Code", 18F, FontStyle.Regular, GraphicsUnit.Point, 204);
+        Font = new Font("Cascadia Code", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
         FormBorderStyle = FormBorderStyle.FixedSingle;
         Name = "Form1";
         Padding = new Padding(10);
