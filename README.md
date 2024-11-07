@@ -44,12 +44,13 @@
 - **`pr1`** - Ветка, содержащая материалы и отчет по первой практике (Арканоид). Вы можете просмотреть содержимое этой ветки по [этой ссылке](https://github.com/Skeyanast/Math_prog_Sem5/tree/pr1).
 - **`pr2`** - Ветка, содержащая материалы и отчет по второй практике (Научный калькулятор). Вы можете просмотреть содержимое этой ветки по [этой ссылке](https://github.com/Skeyanast/Math_prog_Sem5/tree/pr2).
 - **`pr3`** - Ветка, содержащая материалы и отчет по третьей практике (Калькулятор-шифратор-дешифратор информации). Вы можете просмотреть содержимое этой ветки по [этой ссылке](https://github.com/Skeyanast/Math_prog_Sem5/tree/pr3).
+- **`pr4`** - Ветка, содержащая материалы и отчет по четвертой практике (Визуализация и анимация с использованием массивов). Вы можете просмотреть содержимое этой ветки по [этой ссылке](https://github.com/Skeyanast/Math_prog_Sem5/tree/pr4).
 
 ## Контакты
 
 Если у вас есть вопросы или предложения, пожалуйста, свяжитесь со мной:
 
-- **[Email](mailto:muravev.i.v2@edu.mirea.ru)** <img src="https://www.svgrepo.com/show/452213/gmail.svg" alt="Email Icon" width="20"/>
+- **[Email](mailto:muravev.i.v@edu.mirea.ru)** <img src="https://www.svgrepo.com/show/452213/gmail.svg" alt="Email Icon" width="20"/>
 - **[GitHub](https://github.com/Skeyanast)** <img src="https://www.svgrepo.com/show/475654/github-color.svg" alt="GitHub Icon" width="20"/>
 
 ---
