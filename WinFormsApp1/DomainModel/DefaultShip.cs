@@ -1,71 +1,66 @@
-﻿namespace WinFormsApp1.DomainModel;
+﻿using System.ComponentModel;
+using System.Configuration;
+
+namespace WinFormsApp1.DomainModel;
 
 public class DefaultShip : IShip
 {
-    private List<(int row, int column)> _placedCells = new();
-    private List<(int row, int column)> _livingCells = new();
+    private readonly List<(int row, int column)> _placedCells = new();
+    private readonly List<(int row, int column)> _livingCells = new();
 
-    public event Action<List<(int row, int column)>>? Destroy;
+    public event Action<IReadOnlyList<(int row, int column)>>? Destroy;
 
-    public (int row, int column) BaseCoordinate { get; }
-    public ShipOrientation Orientation { get; }
-    public int Size { get; }
+    public required (int row, int column) BaseCoordinate { get; init; }
+    public required ShipOrientation Orientation { get; init; }
 
-    public List<(int row, int column)> PlacedCells
+    [IntegerValidator(MinValue = 0)]
+    public required int Size { get; init; }
+
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public IReadOnlyList<(int row, int column)> PlacedCells => _placedCells;
+
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public IReadOnlyList<(int row, int column)> LivingCells => _livingCells;
+
+    private bool ShipAlive => _livingCells.Count > 0;
+
+    public DefaultShip()
     {
-        get => _placedCells;
-        private init => _placedCells = value;
-    }
-
-    public List<(int row, int column)> LivingCells
-    {
-        get => _livingCells;
-        private init => _livingCells = value;
-    }
-
-    private bool ShipAlive => LivingCells.Count > 0;
-
-    public DefaultShip((int row, int column) baseCoordinate, ShipOrientation orientation, int size)
-    {
-        BaseCoordinate = baseCoordinate;
-        Orientation = orientation;
-        Size = size;
-
-        switch (orientation)
+        switch (Orientation)
         {
             case ShipOrientation.Horizontal:
-                int baseColumn = baseCoordinate.column;
-                for (int column = baseColumn; column < baseColumn + size; column++)
+                int baseColumn = BaseCoordinate.column;
+                for (int column = baseColumn; column < baseColumn + Size; column++)
                 {
-                    PlacedCells.Add((baseCoordinate.row, column));
+                    _placedCells.Add((BaseCoordinate.row, column));
                 }
                 break;
             case ShipOrientation.Vertical:
-                int baseRow = baseCoordinate.row;
-                for (int row = baseRow; row < baseRow + size; row++)
+                int baseRow = BaseCoordinate.row;
+                for (int row = baseRow; row < baseRow + Size; row++)
                 {
-                    PlacedCells.Add((row, baseCoordinate.column));
+                    _placedCells.Add((row, BaseCoordinate.column));
                 }
                 break;
             default:
                 throw new ArgumentException("Orientation must be Horizontal or Vertical");
         }
 
-        LivingCells = PlacedCells;
+        _livingCells = _placedCells;
     }
 
     public void TakeHit((int row, int column) hitCoordinate)
     {
-        if (!LivingCells.Contains(hitCoordinate))
+        if (!_livingCells.Contains(hitCoordinate))
         {
             return;
         }
 
-        LivingCells.Remove(hitCoordinate);
+        _livingCells.Remove(hitCoordinate);
 
         if (!ShipAlive)
         {
-            Destroy?.Invoke(PlacedCells);
+            Destroy?.Invoke(_placedCells);
         }
     }
 }

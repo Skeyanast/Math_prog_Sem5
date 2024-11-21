@@ -5,13 +5,13 @@
 /// </summary>
 public interface IShip
 {
-    event Action<List<(int row, int column)>>? Destroy;
+    event Action<IReadOnlyList<(int row, int column)>>? Destroy;
 
     (int row, int column) BaseCoordinate { get; }
     ShipOrientation Orientation { get; }
     int Size { get; }
-    List<(int row, int column)> PlacedCells { get; }
-    List<(int row, int column)> LivingCells { get; }
+    IReadOnlyList<(int row, int column)> PlacedCells { get; }
+    IReadOnlyList<(int row, int column)> LivingCells { get; }
 
     void TakeHit((int row, int column) hitCoordinate);
 }

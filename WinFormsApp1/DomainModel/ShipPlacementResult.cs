@@ -8,7 +8,7 @@ public enum ShipPlacementResult
 {
     Success,
     NotEnoughCreationPoints,
-    ShipOutOfBounds,
+    ShipOutOfFieldBounds,
     CollidedWithPlacedShips,
     WithinCollisionFreeZone
 }

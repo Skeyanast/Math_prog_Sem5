@@ -1,16 +1,20 @@
 ﻿namespace WinFormsApp1.DomainModel;
 
-public class PlayingField2D<TCell> : IPlayingField2D<TCell>
-    where TCell : class, IPlayingCell, new()
+public class DefaultPlayingField2D : IPlayingField2D
 {
-    private readonly List<List<TCell>> _grid;
+    private readonly List<List<IPlayingCell>> _grid = new();
+    private readonly List<IShip> _ships = new();
+    private readonly List<char> _horizontalNaming = new();
+    private readonly List<int> _verticalNaming = new();
 
     public IPlayingCell this[int row, int column]
     {
         get
         {
-            if (row >= 0 && row < _grid.Count
-                && column >= 0 && column < _grid[row].Count)
+            if (row >= 0 &&
+                column >= 0 &&
+                row < _grid.Count &&
+                column < _grid[row].Count)
             {
                 return _grid[row][column];
             }
@@ -25,7 +29,7 @@ public class PlayingField2D<TCell> : IPlayingField2D<TCell>
             if (row >= 0 && row < _grid.Count
                 && column >= 0 && column < _grid[row].Count)
             {
-                _grid[row][column] = (TCell)value;
+                _grid[row][column] = value;
             }
             else
             {
@@ -34,55 +38,57 @@ public class PlayingField2D<TCell> : IPlayingField2D<TCell>
         }
     }
 
-    public List<IShip> Ships { get; private set; } = new();
+    public IReadOnlyList<IShip> Ships => _ships;
+    public IReadOnlyList<char> HorizontalNaming => _horizontalNaming;
+    public IReadOnlyList<int> VerticalNaming => _verticalNaming;
 
-    public List<(int row, int column)> AllPlacedCells
+    public IReadOnlyList<(int row, int column)> AllPlacedCells
     {
         get
         {
-            return Ships.SelectMany(s => s.PlacedCells).ToList();
+            return _ships.SelectMany(s => s.PlacedCells).ToList();
         }
     }
 
-    public int ShipsCount => Ships.Count;
-
-    public bool AllShipsDestroyed => Ships.Count == 0;
-
-    public List<char> HorizontalNaming { get; init; }
-    public List<int> VerticalNaming { get; init; }
-    public int Size { get; init; }
-    public int MaxShipPoints { get; init; }
+    public int Size { get; }
+    public int ShipsCount => _ships.Count;
+    public bool AllShipsDestroyed => _ships.Count == 0;
+    public int MaxShipPoints { get; }
     public int RemainingShipPoints { get; private set; }
 
-    public PlayingField2D(int size)
+    public DefaultPlayingField2D(int size)
     {
         Size = size;
         MaxShipPoints = (int)Math.Floor(Math.Pow(Size, 2) / 5);
         RemainingShipPoints = MaxShipPoints;
 
-        _grid = new List<List<TCell>>();
         for (int row = 0; row < Size; row++)
         {
-            List<TCell> newRow = new List<TCell>();
+            List<IPlayingCell> newRow = new List<IPlayingCell>();
             for (int column = 0; column < Size; column++)
             {
-                newRow.Add(new TCell());
+                newRow.Add(new DefaultPlayingCell());
             }
             _grid.Add(newRow);
         }
 
-        HorizontalNaming = new List<char>(size);
-        VerticalNaming = new List<int>(size);
+        _horizontalNaming = new List<char>(size);
+        _verticalNaming = new List<int>(size);
         for (int i = 0; i < Size; i++)
         {
-            HorizontalNaming.Add((char)('A' + i));
-            VerticalNaming.Add(i + 1);
+            _horizontalNaming.Add((char)('A' + i));
+            _verticalNaming.Add(i + 1);
         }
     }
 
     public ShipPlacementResult PlaceShip((int row, int column) baseCoordinate, ShipOrientation orientation, int size)
     {
-        IShip newShip = new DefaultShip(baseCoordinate, orientation, size);
+        DefaultShip newShip = new()
+        {
+            BaseCoordinate = baseCoordinate,
+            Orientation = orientation,
+            Size = size
+        };
 
         ShipPlacementResult checkingConditionsResult = SatisfiesCreationConditions(newShip);
         if (checkingConditionsResult != ShipPlacementResult.Success)
@@ -90,7 +96,10 @@ public class PlayingField2D<TCell> : IPlayingField2D<TCell>
             return checkingConditionsResult;
         }
 
-        Ships.Add(newShip);
+        _ships.Add(newShip);
+
+        newShip.Destroy += OnShipDestroy;
+
         foreach ((int row, int column) in newShip.PlacedCells)
         {
             _grid[row][column].PlaceShip();
@@ -108,9 +117,9 @@ public class PlayingField2D<TCell> : IPlayingField2D<TCell>
             }
 
             // Checking if all ship cells are within the field
-            if (!ShipInBounds(newShip))
+            if (!ShipInFieldBounds(newShip))
             {
-                return ShipPlacementResult.ShipOutOfBounds;
+                return ShipPlacementResult.ShipOutOfFieldBounds;
             }
 
             // Checking if cells are collided with placed ship sells
@@ -134,7 +143,7 @@ public class PlayingField2D<TCell> : IPlayingField2D<TCell>
     {
         if (AllPlacedCells.Contains(shootCoordinate))
         {
-            IShip hittedShip = Ships.First(ship => ship.PlacedCells.Contains(shootCoordinate));
+            IShip hittedShip = _ships.First(ship => ship.PlacedCells.Contains(shootCoordinate));
             hittedShip.TakeHit(shootCoordinate);
             _grid[shootCoordinate.row][shootCoordinate.column].Hit();
             return true;
@@ -146,9 +155,9 @@ public class PlayingField2D<TCell> : IPlayingField2D<TCell>
         }
     }
 
-    private bool CreationPointsEnough(int size) => RemainingShipPoints >= size;
+    private bool CreationPointsEnough(int shipSize) => RemainingShipPoints >= shipSize;
 
-    private bool ShipInBounds(IShip ship)
+    private bool ShipInFieldBounds(IShip ship)
     {
         foreach ((int row, int column) placedCell in ship.PlacedCells)
         {
@@ -162,25 +171,26 @@ public class PlayingField2D<TCell> : IPlayingField2D<TCell>
 
     private bool CellInBounds((int row, int column) cell)
     {
-        if (cell.row >= 0
-            && cell.column >= 0
-            && cell.row < Size
-            && cell.column < Size)
+        try
         {
+            var _ = this[cell.row, cell.column];
             return true;
         }
-        return false;
+        catch (IndexOutOfRangeException)
+        {
+            return false;
+        }
     }
 
-    private bool CollidedWithPlacedShips(List<(int row, int column)> newShipPlacedCells)
+    private bool CollidedWithPlacedShips(IReadOnlyList<(int row, int column)> newShipPlacedCells)
     {
         return newShipPlacedCells.Intersect(AllPlacedCells).Any();
     }
 
-    private bool WithinCollisionFreeZone(List<(int row, int column)> newShipPlacedCells)
+    private bool WithinCollisionFreeZone(IReadOnlyList<(int row, int column)> newShipPlacedCells)
     {
         List<(int row, int column)> noCollisionsArea = new();
-        foreach (IShip placedShip in Ships)
+        foreach (IShip placedShip in _ships)
         {
             List<(int row, int column)> shipOuterArea = new();
             (int row, int column) firstCell = placedShip.PlacedCells[0];
@@ -200,5 +210,28 @@ public class PlayingField2D<TCell> : IPlayingField2D<TCell>
         }
 
         return newShipPlacedCells.Intersect(noCollisionsArea).Any();
+    }
+
+    private void OnShipDestroy(IReadOnlyList<(int row, int column)> shipPlacedCells)
+    {
+        List<(int row, int column)> shipOuterArea = new();
+        (int row, int column) firstCell = shipPlacedCells[0];
+        (int row, int column) lastCell = shipPlacedCells[^1];
+        for (int row = firstCell.row - 1; row <= lastCell.row + 1; row++)
+        {
+            for (int column = firstCell.column - 1; column <= lastCell.column + 1; column++)
+            {
+                shipOuterArea.Add((row, column));
+            }
+        }
+        shipOuterArea = shipOuterArea
+            .Except(shipPlacedCells)
+            .Where(CellInBounds)
+            .ToList();
+
+        foreach ((int row, int column) in shipOuterArea)
+        {
+            _grid[row][column].Hit();
+        }
     }
 }
