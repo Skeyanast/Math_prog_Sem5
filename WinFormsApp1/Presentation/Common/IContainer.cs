@@ -3,7 +3,7 @@
 namespace WinFormsApp1.Presentation.Common;
 
 /// <summary>
-/// Represents common functionality for any IoC container implementation
+/// Represents common functionality for any IoC container implementation.
 /// </summary>
 public interface IContainer
 {
