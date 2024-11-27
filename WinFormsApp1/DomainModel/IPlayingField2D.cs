@@ -9,6 +9,7 @@ public interface IPlayingField2D
     IReadOnlyList<IShip> Ships { get; }
     IReadOnlyList<char> HorizontalNaming { get; }
     IReadOnlyList<int> VerticalNaming { get; }
+    IReadOnlyList<IReadOnlyList<CellStatus>> CellStatuses { get; }
     int Size { get; }
     int ShipsCount { get; }
     bool AllShipsDestroyed { get; }

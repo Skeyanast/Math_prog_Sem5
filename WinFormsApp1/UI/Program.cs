@@ -25,6 +25,6 @@ internal static class Program
             .RegisterView<IResultsView, ResultsForm>()
             .RegisterInstance(new ApplicationContext());
 
-        //controller.Run<MainMenuPresenter>();
+        controller.Run<MainMenuPresenter>();
     }
 }

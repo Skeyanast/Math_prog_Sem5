@@ -7,5 +7,7 @@ public interface IMainMenuView : IView
     event Action? DemoModeClicked;
     event Action? GameModeClicked;
 
-    int FieldSize { get; }
+    int PlayingFieldSize { get; }
+
+    void OnInvalidFieldSizeValue(string errorMessage);
 }

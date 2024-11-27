@@ -10,11 +10,11 @@ public class DefaultShip : IShip
 
     public event Action<IReadOnlyList<(int row, int column)>>? Destroy;
 
-    public required (int row, int column) BaseCoordinate { get; init; }
-    public required ShipOrientation Orientation { get; init; }
+    public (int row, int column) BaseCoordinate { get; init; }
+    public ShipOrientation Orientation { get; init; }
 
     [IntegerValidator(MinValue = 0)]
-    public required int Size { get; init; }
+    public int Size { get; init; }
 
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public IReadOnlyList<(int row, int column)> PlacedCells => _placedCells;
@@ -24,8 +24,12 @@ public class DefaultShip : IShip
 
     private bool ShipAlive => _livingCells.Count > 0;
 
-    public DefaultShip()
+    public DefaultShip((int row, int column) baseCoordinate, ShipOrientation orientation, int size)
     {
+        BaseCoordinate = baseCoordinate;
+        Orientation = orientation;
+        Size = size;
+
         switch (Orientation)
         {
             case ShipOrientation.Horizontal:

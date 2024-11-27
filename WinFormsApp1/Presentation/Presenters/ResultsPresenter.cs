@@ -9,11 +9,20 @@ public class ResultsPresenter : BasePresenter<IResultsView, ResultsPresenterRunA
     public ResultsPresenter(IResultsView view, IApplicationController controller)
         : base(view, controller)
     {
-        throw new NotImplementedException();
+        View.OnReturnToMainMenuClicked += BackToMainMenuWindow;
     }
 
     public override void Run(ResultsPresenterRunArgs args)
     {
-        throw new NotImplementedException();
+        View.WinPlayerNumber = args.WinPlayerNumber;
+        View.ShotCount = args.ShotCount;
+        View.SetResults();
+        View.Show();
+    }
+
+    private void BackToMainMenuWindow()
+    {
+        Controller.Run<MainMenuPresenter>();
+        View.Close();
     }
 }

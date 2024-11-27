@@ -1,14 +1,22 @@
-﻿using WinFormsApp1.Presentation.Common;
+﻿using System.Collections.ObjectModel;
+using WinFormsApp1.DomainModel;
+using WinFormsApp1.Presentation.Common;
 
 namespace WinFormsApp1.Presentation.Views;
 
 public interface IDemoModeView : IView
 {
-    event Action? OnFieldCellClicked;
+    event Action<int, int>? OnPlayingFieldGridCellClicked;
     event Action? OnPlaceShipsClicked;
-    event Action? OnFinishGameClicked;
+    event Action? OnToResultsClicked;
 
-    // Какая-то матричная структура поля
-    // Список ходов для истории
+    int PlayingFieldGridSize { get; set; }
+    IReadOnlyList<string> PlayingFieldHorizontalNaming { get; set; }
+    IReadOnlyList<string> PlayingFieldVerticalNaming { get; set; }
+    IReadOnlyList<IReadOnlyList<CellStatus>> PlayingFieldGridCellStatuses { get; set; }
+    ObservableCollection<string> ShotsHistory { get; }
 
+    void SetShotsFired(int number);
+    void PlayingFieldGridInvalidate();
+    void FinishGame();
 }

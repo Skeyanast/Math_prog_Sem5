@@ -26,8 +26,10 @@ public class DefaultPlayingField2D : IPlayingField2D
 
         set
         {
-            if (row >= 0 && row < _grid.Count
-                && column >= 0 && column < _grid[row].Count)
+            if (row >= 0 &&
+                column >= 0 &&
+                row < _grid.Count &&
+                column < _grid[row].Count)
             {
                 _grid[row][column] = value;
             }
@@ -47,6 +49,18 @@ public class DefaultPlayingField2D : IPlayingField2D
         get
         {
             return _ships.SelectMany(s => s.PlacedCells).ToList();
+        }
+    }
+
+    public IReadOnlyList<IReadOnlyList<CellStatus>> CellStatuses
+    {
+        get
+        {
+            return Enumerable.Range(0, Size)
+            .Select(i => Enumerable.Range(0, Size)
+                .Select(j => _grid[i][j].Status)
+                .ToList())
+            .ToList();
         }
     }
 
@@ -83,12 +97,7 @@ public class DefaultPlayingField2D : IPlayingField2D
 
     public ShipPlacementResult PlaceShip((int row, int column) baseCoordinate, ShipOrientation orientation, int size)
     {
-        DefaultShip newShip = new()
-        {
-            BaseCoordinate = baseCoordinate,
-            Orientation = orientation,
-            Size = size
-        };
+        DefaultShip newShip = new(baseCoordinate, orientation, size);
 
         ShipPlacementResult checkingConditionsResult = SatisfiesCreationConditions(newShip);
         if (checkingConditionsResult != ShipPlacementResult.Success)

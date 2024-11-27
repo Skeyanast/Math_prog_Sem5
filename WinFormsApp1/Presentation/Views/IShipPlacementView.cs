@@ -1,27 +1,24 @@
-﻿using WinFormsApp1.Presentation.Common;
+﻿using System.Collections.ObjectModel;
+using WinFormsApp1.DomainModel;
+using WinFormsApp1.Presentation.Common;
 
 namespace WinFormsApp1.Presentation.Views;
 
 public interface IShipPlacementView : IView
 {
-    event Action? AddShipClicked;
-    event Action? CompletePlacementClicked;
+    event Action<int, int>? OnPlaceShipGridCellClicked;
+    event Action? OnCompletePlacementClicked;
 
-    int ShipBaseRow { get; }
-    int ShipBaseColumn { get; }
-    int ShipOrientation { get; }
+    int PlayingFieldGridSize { get; set; }
+    IReadOnlyList<string> PlayingFieldHorizontalNaming { get; set; }
+    IReadOnlyList<string> PlayingFieldVerticalNaming { get; set; }
+    IReadOnlyList<IReadOnlyList<CellStatus>> PlayingFieldGridCellStatuses { get; set; }
+    ObservableCollection<string> PlacedShips { get; }
+    ShipOrientation ShipOrientation { get; }
     int ShipSize { get; }
-    int ShipCreationPoints { get; }
-    // Какая-то матричная структура поля
-    // Список кораблей 
 
-    /*
-    /// Будет вызываться при недопустимых параметрах создания
-    */
-    void OnInvalidShipCreationArguments(); // Что-то передать в параметры
-
-    /*
-    /// Будет вызываться при недостаточных очках для создания
-    */
-    void OnLackOfPlacementPoints(); // Что-то передать в параметры
+    void PlacementFieldGridInvalidate();
+    void ProcessShipCreationResult(ShipPlacementResult shipPlacementResult);
+    void SetRemainingPlacementPoints(int remainingPoints, int maxPoints);
+    void FinishPlacement();
 }
