@@ -21,7 +21,6 @@ public class DefaultShip : IShip
 
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public IReadOnlyList<(int row, int column)> LivingCells => _livingCells;
-
     private bool ShipAlive => _livingCells.Count > 0;
 
     public DefaultShip((int row, int column) baseCoordinate, ShipOrientation orientation, int size)
@@ -37,6 +36,7 @@ public class DefaultShip : IShip
                 for (int column = baseColumn; column < baseColumn + Size; column++)
                 {
                     _placedCells.Add((BaseCoordinate.row, column));
+                    //_livingCells.Add((BaseCoordinate.row, column));
                 }
                 break;
             case ShipOrientation.Vertical:
@@ -44,13 +44,14 @@ public class DefaultShip : IShip
                 for (int row = baseRow; row < baseRow + Size; row++)
                 {
                     _placedCells.Add((row, BaseCoordinate.column));
+                    //_livingCells.Add((row, BaseCoordinate.column));
                 }
                 break;
             default:
                 throw new ArgumentException("Orientation must be Horizontal or Vertical");
         }
 
-        _livingCells = _placedCells;
+        _livingCells = new List<(int, int)>(_placedCells);
     }
 
     public void TakeHit((int row, int column) hitCoordinate)

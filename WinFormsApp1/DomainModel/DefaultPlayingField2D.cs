@@ -66,7 +66,7 @@ public class DefaultPlayingField2D : IPlayingField2D
 
     public int Size { get; }
     public int ShipsCount => _ships.Count;
-    public bool AllShipsDestroyed => _ships.Count == 0;
+    public bool AllShipsDestroyed => ShipsCount == 0;
     public int MaxShipPoints { get; }
     public int RemainingShipPoints { get; private set; }
 
@@ -241,6 +241,12 @@ public class DefaultPlayingField2D : IPlayingField2D
         foreach ((int row, int column) in shipOuterArea)
         {
             _grid[row][column].Hit();
+        }
+
+        if (AllPlacedCells.Contains(shipPlacedCells[0]))
+        {
+            IShip destroyedShip = _ships.First(ship => ship.PlacedCells.Contains(shipPlacedCells[0]));
+            _ships.Remove(destroyedShip);
         }
     }
 }
