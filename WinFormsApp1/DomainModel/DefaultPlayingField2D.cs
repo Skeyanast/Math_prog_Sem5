@@ -201,21 +201,21 @@ public class DefaultPlayingField2D : IPlayingField2D
         List<(int row, int column)> noCollisionsArea = new();
         foreach (IShip placedShip in _ships)
         {
-            List<(int row, int column)> shipOuterArea = new();
+            List<(int row, int column)> shipEntireArea = new();
             (int row, int column) firstCell = placedShip.PlacedCells[0];
             (int row, int column) lastCell = placedShip.PlacedCells[^1];
             for (int row = firstCell.row - 1; row <= lastCell.row + 1; row++)
             {
                 for (int column = firstCell.column - 1; column <= lastCell.column + 1; column++)
                 {
-                    shipOuterArea.Add((row, column));
+                    shipEntireArea.Add((row, column));
                 }
             }
-            shipOuterArea = shipOuterArea
+            List<(int row, int column)> shipOuterArea = shipEntireArea
                 .Except(placedShip.PlacedCells)
                 .Where(CellInBounds)
                 .ToList();
-            noCollisionsArea.Concat(shipOuterArea).ToList();
+            noCollisionsArea = [.. noCollisionsArea, .. shipOuterArea];
         }
 
         return newShipPlacedCells.Intersect(noCollisionsArea).Any();
