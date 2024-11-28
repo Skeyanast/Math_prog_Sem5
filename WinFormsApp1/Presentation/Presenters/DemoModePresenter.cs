@@ -43,13 +43,13 @@ public class DemoModePresenter : BasePresenter<IDemoModeView, DemoModePresenterR
 
     private void OnFieldCellClicked(int row, int column)
     {
-        _playingField.Shoot((row, column));
+        bool isHitted = _playingField.Shoot((row, column));
         View.PlayingFieldGridCellStatuses = _playingField.CellStatuses;
         UpdatePlayingField();
 
         _currentShotNumber++;
         View.SetShotsFired(_currentShotNumber);
-        View.ShotsHistory.Add($"Shot {_currentShotNumber}: {_playingField.HorizontalNaming[column]}{_playingField.VerticalNaming[row]}");
+        View.ShotsHistory.Add($"Shot {_currentShotNumber}: {_playingField.HorizontalNaming[column]}{_playingField.VerticalNaming[row]}; {(isHitted ? "Hit" : "Miss")}");
         if (_playingField.AllShipsDestroyed)
         {
             View.FinishGame();
