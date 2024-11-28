@@ -73,6 +73,7 @@ public partial class MainMenuForm : Form, IMainMenuView
         _playingFieldSizeNumericUpDown.Font = new Font("Cascadia Code", 12F, FontStyle.Regular, GraphicsUnit.Point, 204);
         _playingFieldSizeNumericUpDown.TextAlign = HorizontalAlignment.Center;
         _playingFieldSizeNumericUpDown.Value = 7;
+        _playingFieldSizeNumericUpDown.ReadOnly = true;
         Controls.Add(_playingFieldSizeNumericUpDown);
         //
         // _startDemoModeButton

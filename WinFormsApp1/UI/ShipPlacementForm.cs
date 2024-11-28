@@ -9,6 +9,7 @@ public partial class ShipPlacementForm : Form, IShipPlacementView
 {
     private readonly StatusStrip _statusStrip = new();
     private readonly ToolStripLabel _shipPlacementPointsToolStripLabel = new();
+    private readonly Label _placedShipsLabel = new();
     private readonly Label _shipSizeLabel = new();
     private readonly ListBox _placedShipsListBox = new();
     private readonly Button _completePlacementButton = new();
@@ -58,8 +59,10 @@ public partial class ShipPlacementForm : Form, IShipPlacementView
 
     public new void Show()
     {
+        _horizontalOrientationRadioButton.Select();
         InitializePlayingFieldWithData();
         PlacementFieldGridInvalidate();
+
         ShowDialog();
     }
 
@@ -139,6 +142,14 @@ public partial class ShipPlacementForm : Form, IShipPlacementView
         // 
         _shipPlacementPointsToolStripLabel.Name = "_shipPlacementPointsToolStripLabel";
         _statusStrip.Items.Add(_shipPlacementPointsToolStripLabel);
+        //
+        // _placedShipsLabel
+        //
+        _placedShipsLabel.AutoSize = true;
+        _placedShipsLabel.Location = new Point(12, (int)(Height * 0.05));
+        _placedShipsLabel.Name = "_placedShipsLabel";
+        _placedShipsLabel.Text = "Placed ships:";
+        Controls.Add(_placedShipsLabel);
         // 
         // _shipSizeLabel
         // 
@@ -180,7 +191,6 @@ public partial class ShipPlacementForm : Form, IShipPlacementView
         _horizontalOrientationRadioButton.TabStop = true;
         _horizontalOrientationRadioButton.Text = "Horizontal";
         _horizontalOrientationRadioButton.UseVisualStyleBackColor = true;
-        _horizontalOrientationRadioButton.Select();
         // 
         // _verticalOrientationRadioButton
         // 

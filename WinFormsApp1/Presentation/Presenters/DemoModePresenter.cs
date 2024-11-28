@@ -70,5 +70,6 @@ public class DemoModePresenter : BasePresenter<IDemoModeView, DemoModePresenterR
     private void GoToResultsWindow()
     {
         Controller.Run<ResultsPresenter, ResultsPresenterRunArgs>(new ResultsPresenterRunArgs(1, _currentShotNumber));
+        View.Close();
     }
 }
