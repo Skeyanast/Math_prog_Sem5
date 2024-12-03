@@ -7,35 +7,76 @@ public partial class MainForm : Form
     private int[,] _maze;
     private Point _start;
     private Point _end;
+    private List<Point> _path = new();
 
     public MainForm()
     {
         InitializeComponent();
         DoubleBuffered = true;
 
-        InitializeMaze();
+        //InitializeMaze(0, new Point(1, 1), new Point(6, 5), out _maze);
+        //InitializeMaze(1, new Point(1, 1), new Point(7, 6), out _maze);
+        InitializeMaze(2, new Point(1, 1), new Point(8, 8), out _maze);
 
         Paint += MainForm_Paint;
+        _dijkstraButton.Click += (s, e) =>  AlgorithmExecutionButton_Click(Dijkstra);
+        _aStarButton.Click += (s, e) =>  AlgorithmExecutionButton_Click(AStar);
+        _waveAlgorithmButton.Click += (s, e) =>  AlgorithmExecutionButton_Click(WaveAlgorithm);
+        _clearPathButton.Click += (s, e) => ClearPathButton_Click();
     }
 
-    private void InitializeMaze()
+    private void InitializeMaze(int mazeNumber, Point start, Point end, out int[,] maze)
     {
-        _maze = new int[,]
-        {
-            { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
-            { 0, 0, 1, 0, 0, 0, 1, 1, 0, 1 },
-            { 1, 0, 1, 1, 1, 0, 0, 0, 0, 1 },
-            { 1, 0, 0, 0, 0, 1, 1, 1, 0, 1 },
-            { 1, 1, 1, 0, 0, 0, 0, 0, 0, 1 },
-            { 1, 0, 0, 0, 1, 1, 1, 0, 0, 1 },
-            { 1, 1, 1, 0, 0, 0, 0, 1, 0, 1 },
-            { 1, 0, 0, 0, 1, 1, 1, 1, 0, 1 },
-            { 1, 1, 1, 0, 0, 0, 0, 0, 0, 1 },
-            { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }
-        };
+        List<int[,]> testMazes =
+        [
+            new int[,]
+            {
+                { 1, 1, 1, 1, 1, 1, 1, 1 },
+                { 1, 0, 0, 1, 0, 0, 0, 1 },
+                { 1, 1, 0, 1, 0, 1, 0, 1 },
+                { 1, 0, 0, 1, 0, 1, 0, 1 },
+                { 1, 0, 1, 1, 0, 1, 0, 1 },
+                { 1, 0, 0, 0, 0, 1, 0, 1 },
+                { 1, 1, 1, 1, 1, 1, 1, 1 }
+            },
+            new int[,]
+            {
+                { 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+                { 1, 0, 1, 0, 1, 0, 0, 0, 1 },
+                { 1, 0, 0, 0, 0, 0, 1, 0, 1 },
+                { 1, 0, 1, 0, 1, 1, 0, 0, 1 },
+                { 1, 1, 0, 0, 1, 1, 0, 1, 1 },
+                { 1, 0, 0, 1, 1, 0, 0, 0, 1 },
+                { 1, 0, 0, 0, 0, 0, 1, 0, 1 },
+                { 1, 1, 1, 1, 1, 1, 1, 1, 1 }
+            },
+            new int[,]
+            {
+                { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+                { 1, 0, 1, 0, 0, 0, 1, 1, 0, 1 },
+                { 1, 0, 1, 1, 1, 0, 0, 0, 0, 1 },
+                { 1, 0, 0, 0, 0, 0, 1, 1, 0, 1 },
+                { 1, 1, 0, 1, 1, 0, 0, 1, 0, 1 },
+                { 1, 0, 0, 1, 1, 1, 0, 1, 0, 1 },
+                { 1, 0, 1, 1, 0, 0, 0, 1, 0, 1 },
+                { 1, 0, 0, 1, 1, 0, 1, 1, 0, 1 },
+                { 1, 1, 0, 1, 0, 0, 0, 0, 0, 1 },
+                { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }
+            },
+        ];
 
-        _start = new Point(1, 1);
-        _end = new Point(8, 8);
+        maze = testMazes[mazeNumber];
+
+        if (!PointInBounds(start))
+        {
+            throw new ArgumentOutOfRangeException("Invalid start point");
+        }
+        if (!PointInBounds(end))
+        {
+            throw new ArgumentOutOfRangeException("Invalid end point");
+        }
+        _start = start;
+        _end = end;
 
         Invalidate();
     }
@@ -55,33 +96,28 @@ public partial class MainForm : Form
 
         g.FillRectangle(Brushes.Green, _start.X * CELLSIZE, _start.Y * CELLSIZE, CELLSIZE, CELLSIZE);
         g.FillRectangle(Brushes.Red, _end.X * CELLSIZE, _end.Y * CELLSIZE, CELLSIZE, CELLSIZE);
+
+        foreach (Point point in _path)
+        {
+            g.FillRectangle(Brushes.Cyan, point.X * CELLSIZE, point.Y * CELLSIZE, CELLSIZE, CELLSIZE);
+        }
     }
 
-    private void DijkstraButton_Click(object sender, EventArgs e)
+    private void AlgorithmExecutionButton_Click(Action PathfindingAlgorithm)
     {
         System.Diagnostics.Stopwatch stopwatch = new();
         stopwatch.Start();
-        Dijkstra();
+        PathfindingAlgorithm?.Invoke();
         stopwatch.Stop();
-        MessageBox.Show($"Execution time: {stopwatch.ElapsedMilliseconds} ms");
+        Invalidate();
+        _algorithmNameLabel.Text = $"Algorithm Name: {PathfindingAlgorithm?.Method.Name}";
+        _executionTimeLabel.Text = $"Execution time: {stopwatch.ElapsedMilliseconds} ms";
     }
 
-    private void AAsteriskButton_Click(object sender, EventArgs e)
+    private void ClearPathButton_Click()
     {
-        System.Diagnostics.Stopwatch stopwatch = new();
-        stopwatch.Start();
-        AAsterisk();
-        stopwatch.Stop();
-        MessageBox.Show($"Execution time: {stopwatch.ElapsedMilliseconds} ms");
-    }
-
-    private void WaveAlgorithmButton_Click(object sender, EventArgs e)
-    {
-        System.Diagnostics.Stopwatch stopwatch = new();
-        stopwatch.Start();
-        WaveAlgorithm();
-        stopwatch.Stop();
-        MessageBox.Show($"Execution time: {stopwatch.ElapsedMilliseconds} ms");
+        _path.Clear();
+        Invalidate();
     }
 
     private void Dijkstra()
@@ -91,10 +127,10 @@ public partial class MainForm : Form
         SortedSet<PointDistance> priorityQueue = new(
             Comparer<PointDistance>.Create((a, b) =>
             {
-                int cmp = a.Distance.CompareTo(b.Distance);
-                return cmp == 0
+                int compareResult = a.Distance.CompareTo(b.Distance);
+                return compareResult == 0
                     ? a.Point.GetHashCode().CompareTo(b.Point.GetHashCode())
-                    : cmp;
+                    : compareResult;
             }
         ));
 
@@ -120,7 +156,7 @@ public partial class MainForm : Form
                 break;
             }
 
-            foreach (var neighbor in GetNeighbors(current.Point))
+            foreach (Point neighbor in GetNeighbors(current.Point))
             {
                 if (_maze[neighbor.Y, neighbor.X] == 1)
                 {
@@ -138,17 +174,15 @@ public partial class MainForm : Form
             }
         }
 
-        List<Point> path = new();
+        _path.Clear();
         for (Point at = _end; at != Point.Empty; at = previous[at.Y, at.X])
         {
-            path.Add(at);
+            _path.Add(at);
         }
-        path.Reverse();
-
-        DrawPath(path);
+        _path.Reverse();
     }
 
-    private void AAsterisk()
+    private void AStar()
     {
         HashSet<Point> openSet = new();
         Dictionary<Point, Point> cameFrom = new();
@@ -163,42 +197,55 @@ public partial class MainForm : Form
                 fScore[new Point(x, y)] = int.MaxValue;
             }
         }
-
         gScore[_start] = 0;
         fScore[_start] = Heuristic(_start, _end);
         openSet.Add(_start);
 
         while (openSet.Count > 0)
         {
-            Point current = openSet.OrderBy(p => fScore[p]).First();
+            Point currentPoint = openSet.OrderBy(p => fScore[p]).First();
 
-            if (current == _end)
+            if (currentPoint == _end)
             {
-                DrawPath(ReconstructPath(cameFrom, current));
+                ReconstructPath(cameFrom, currentPoint);
                 return;
             }
 
-            openSet.Remove(current);
+            openSet.Remove(currentPoint);
 
-            foreach (Point neighbor in GetNeighbors(current))
+            foreach (Point neighbor in GetNeighbors(currentPoint))
             {
                 if (_maze[neighbor.Y, neighbor.X] == 1)
                 {
                     continue;
                 }
 
-                int tentativeGScore = gScore[current] + 1;
+                int tentativeGScore = gScore[currentPoint] + 1;
                 if (tentativeGScore < gScore[neighbor])
                 {
-                    cameFrom[neighbor] = current;
+                    cameFrom[neighbor] = currentPoint;
                     gScore[neighbor] = tentativeGScore;
                     fScore[neighbor] = gScore[neighbor] + Heuristic(neighbor, _end);
-                    if (!openSet.Contains(neighbor))
-                    {
-                        openSet.Add(neighbor);
-                    }
+                    openSet.Add(neighbor);
                 }
             }
+        }
+
+        void ReconstructPath(Dictionary<Point, Point> cameFrom, Point current)
+        {
+            _path.Clear();
+            _path.Add(current);
+            while (cameFrom.TryGetValue(current, out Point next))
+            {
+                current = next;
+                _path.Add(current);
+            }
+            _path.Reverse();
+        }
+
+        static int Heuristic(Point a, Point b)
+        {
+            return Math.Abs(a.X - b.X) + Math.Abs(a.Y - b.Y);
         }
     }
 
@@ -215,7 +262,7 @@ public partial class MainForm : Form
             
             if (current == _end)
             {
-                DrawPath(GetPathFromWave(wave, current));
+                GetPathFromWave(wave, current);
                 return;
             }
 
@@ -231,15 +278,38 @@ public partial class MainForm : Form
                 queue.Enqueue(neighbor);
             }
         }
+
+        void GetPathFromWave(int[,] wave, Point end)
+        {
+            _path.Clear();
+            Point current = end;
+
+            while (wave[current.Y, current.X] != 1)
+            {
+                _path.Add(current);
+
+                foreach (Point neighbor in GetNeighbors(current))
+                {
+                    if (wave[neighbor.Y, neighbor.X] == wave[current.Y, current.X] - 1)
+                    {
+                        current = neighbor;
+                        break;
+                    }
+                }
+            }
+            _path.Add(_start);
+            _path.Reverse();
+        }
     }
 
-    private void DrawPath(List<Point> path)
+    private bool PointInBounds(Point point)
     {
-        foreach (Point point in path)
+        if (point.X >= 0 && point.X < _maze.GetLength(1) &&
+            point.Y >= 0 && point.Y < _maze.GetLength(0))
         {
-            Graphics g = CreateGraphics();
-            g.FillRectangle(Brushes.Cyan, point.X * CELLSIZE, point.Y * CELLSIZE, CELLSIZE, CELLSIZE);
+            return true;
         }
+        return false;
     }
 
     private IEnumerable<Point> GetNeighbors(Point current)
@@ -255,51 +325,10 @@ public partial class MainForm : Form
         foreach (Point direction in directions)
         {
             Point neighbor = new(current.X + direction.X, current.Y + direction.Y);
-            if (neighbor.X >= 0 && neighbor.Y >= 0 &&
-                neighbor.X < _maze.GetLength(1) && neighbor.Y < _maze.GetLength(0))
+            if (PointInBounds(neighbor))
             {
                 yield return neighbor;
             }
         }
-    }
-
-    private static int Heuristic(Point a, Point b)
-    {
-        return Math.Abs(a.X - b.X) + Math.Abs(a.Y - b.Y);
-    }
-
-    private static List<Point> ReconstructPath(Dictionary<Point, Point> cameFrom, Point current)
-    {
-        List<Point> totalPath = new() { current };
-        while (cameFrom.TryGetValue(current, out Point next))
-        {
-            current = next;
-            totalPath.Add(current);
-        }
-        totalPath.Reverse();
-        return totalPath;
-    }
-
-    private List<Point> GetPathFromWave(int[,] wave, Point end)
-    {
-        List<Point> path = new();
-        Point current = end;
-
-        while (wave[current.Y, current.X] != 1)
-        {
-            path.Add(current);
-
-            foreach (Point neighbor in GetNeighbors(current))
-            {
-                if (wave[neighbor.Y, neighbor.X] == wave[current.Y, current.X] - 1)
-                {
-                    current = neighbor;
-                    break;
-                }
-            }
-        }
-        path.Add(_start);
-        path.Reverse();
-        return path;
     }
 }
