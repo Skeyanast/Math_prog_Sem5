@@ -7,17 +7,6 @@ namespace WinFormsApp1.UI;
 
 public partial class ShipPlacementForm : Form, IShipPlacementView
 {
-    private readonly StatusStrip _statusStrip = new();
-    private readonly ToolStripLabel _shipPlacementPointsToolStripLabel = new();
-    private readonly Label _placedShipsLabel = new();
-    private readonly Label _shipSizeLabel = new();
-    private readonly ListBox _placedShipsListBox = new();
-    private readonly Button _completePlacementButton = new();
-    private readonly RadioButton _horizontalOrientationRadioButton = new();
-    private readonly RadioButton _verticalOrientationRadioButton = new();
-    private readonly GroupBox _shipOrientationGroupBox = new();
-    private readonly NumericUpDown _shipSizeNumericUpDown = new();
-    private readonly TableLayoutPanel _playingFieldTableLayoutPanel = new();
 
     public event Action<int, int>? OnPlaceShipGridCellClicked;
     public event Action? OnCompletePlacementClicked;
@@ -52,7 +41,7 @@ public partial class ShipPlacementForm : Form, IShipPlacementView
     {
         InitializeComponent();
 
-        InitializeControls();
+        _completePlacementButton.Click += CompletePlacementButton_Click;
 
         PlacedShips.CollectionChanged += PlacedShipsCollectionChanged;
     }
@@ -116,7 +105,7 @@ public partial class ShipPlacementForm : Form, IShipPlacementView
 
     public void SetRemainingPlacementPoints(int remainingPoints, int maxPoints)
     {
-        _shipPlacementPointsToolStripLabel.Text = $"Ship creation points: {remainingPoints} / {maxPoints}";
+        _shipPlacementPointsToolStripStatusLabel.Text = $"Ship creation points: {remainingPoints} / {maxPoints}";
     }
 
     public void FinishPlacement()
@@ -125,137 +114,21 @@ public partial class ShipPlacementForm : Form, IShipPlacementView
         _completePlacementButton.Enabled = true;
     }
 
-    private void InitializeControls()
-    {
-        ((System.ComponentModel.ISupportInitialize)_shipSizeNumericUpDown).BeginInit();
-        SuspendLayout();
-
-        //
-        // _statusStrip
-        //
-        _statusStrip.Dock = DockStyle.Bottom;
-        _statusStrip.Padding = new Padding(2);
-        _statusStrip.LayoutStyle = ToolStripLayoutStyle.HorizontalStackWithOverflow;
-        Controls.Add(_statusStrip);
-        // 
-        // _shipPlacementPointsToolStripLabel
-        // 
-        _shipPlacementPointsToolStripLabel.Name = "_shipPlacementPointsToolStripLabel";
-        _statusStrip.Items.Add(_shipPlacementPointsToolStripLabel);
-        //
-        // _placedShipsLabel
-        //
-        _placedShipsLabel.AutoSize = true;
-        _placedShipsLabel.Location = new Point(12, (int)(Height * 0.05));
-        _placedShipsLabel.Name = "_placedShipsLabel";
-        _placedShipsLabel.Text = "Placed ships:";
-        Controls.Add(_placedShipsLabel);
-        // 
-        // _shipSizeLabel
-        // 
-        _shipSizeLabel.AutoSize = true;
-        _shipSizeLabel.Location = new Point((int)(Width * 0.25), (int)(Height * 0.4));
-        _shipSizeLabel.Name = "_shipSizeLabel";
-        _shipSizeLabel.Text = "Size:";
-        Controls.Add(_shipSizeLabel);
-        // 
-        // _placedShipsListBox
-        // 
-        _placedShipsListBox.Size = new Size((int)(Width * 0.2), (int)(Height * 0.5));
-        _placedShipsListBox.Location = new Point(12, (int)(Height * 0.1));
-        _placedShipsListBox.FormattingEnabled = true;
-        _placedShipsListBox.Font = new Font("Cascadia Code", 9F, FontStyle.Regular, GraphicsUnit.Point, 204);
-        _placedShipsListBox.SelectionMode = SelectionMode.One;
-        _placedShipsListBox.Name = "_placedShipsListBox";
-        _placedShipsListBox.TabIndex = 0;
-        Controls.Add(_placedShipsListBox);
-        // 
-        // _completePlacementButton
-        // 
-        _completePlacementButton.Size = new Size(200, 30);
-        _completePlacementButton.Location = new Point((int)(Width * 0.2), (int)(Height * 0.8));
-        _completePlacementButton.Name = "_completePlacementButton";
-        _completePlacementButton.TabIndex = 1;
-        _completePlacementButton.Text = "Complete";
-        _completePlacementButton.UseVisualStyleBackColor = true;
-        _completePlacementButton.Enabled = false;
-        _completePlacementButton.Click += CompletePlacementClicked;
-        Controls.Add(_completePlacementButton);
-        // 
-        // _horizontalOrientationRadioButton
-        // 
-        _horizontalOrientationRadioButton.AutoSize = true;
-        _horizontalOrientationRadioButton.Location = new Point((int)(_shipOrientationGroupBox.Width * 0.05), (int)(_shipOrientationGroupBox.Height * 0.3));
-        _horizontalOrientationRadioButton.Name = "_horizontalOrientationRadioButton";
-        _horizontalOrientationRadioButton.TabIndex = 3;
-        _horizontalOrientationRadioButton.TabStop = true;
-        _horizontalOrientationRadioButton.Text = "Horizontal";
-        _horizontalOrientationRadioButton.UseVisualStyleBackColor = true;
-        // 
-        // _verticalOrientationRadioButton
-        // 
-        _verticalOrientationRadioButton.AutoSize = true;
-        _verticalOrientationRadioButton.Location = new Point((int)(_shipOrientationGroupBox.Width * 0.05), (int)(_shipOrientationGroupBox.Height * 0.6));
-        _verticalOrientationRadioButton.Name = "_verticalOrientationRadioButton";
-        _verticalOrientationRadioButton.TabIndex = 4;
-        _verticalOrientationRadioButton.TabStop = true;
-        _verticalOrientationRadioButton.Text = "Vertical";
-        _verticalOrientationRadioButton.UseVisualStyleBackColor = true;
-        // 
-        // _shipOrientationGroupBox
-        // 
-        _shipOrientationGroupBox.Controls.Add(_horizontalOrientationRadioButton);
-        _shipOrientationGroupBox.Controls.Add(_verticalOrientationRadioButton);
-        _shipOrientationGroupBox.Size = new Size((int)(Width * 0.2), (int)(Height * 0.2));
-        _shipOrientationGroupBox.Location = new Point((int)(Width * 0.25), (int)(Height * 0.15));
-        _shipOrientationGroupBox.Name = "_shipOrientationGroupBox";
-        _shipOrientationGroupBox.TabIndex = 2;
-        _shipOrientationGroupBox.TabStop = false;
-        _shipOrientationGroupBox.Text = "Orientation:";
-        Controls.Add(_shipOrientationGroupBox);
-        // 
-        // _shipSizeNumericUpDown
-        // 
-        _shipSizeNumericUpDown.Width = 60;
-        _shipSizeNumericUpDown.Location = new Point((int)(Width * 0.35), (int)(Height * 0.4));
-        _shipSizeNumericUpDown.Minimum = 1;
-        _shipSizeNumericUpDown.Maximum = 4;
-        _shipSizeNumericUpDown.Name = "_shipSizeNumericUpDown";
-        _shipSizeNumericUpDown.TabIndex = 5;
-        _shipSizeNumericUpDown.TextAlign = HorizontalAlignment.Center;
-        _shipSizeNumericUpDown.ReadOnly = true;
-        _shipSizeNumericUpDown.Value = 1;
-        Controls.Add(_shipSizeNumericUpDown);
-        // 
-        // _playingFieldTableLayoutPanel
-        // 
-        _playingFieldTableLayoutPanel.Height = (int)(Height * 0.8);
-        _playingFieldTableLayoutPanel.Width = _playingFieldTableLayoutPanel.Height;
-        _playingFieldTableLayoutPanel.Location = new Point((int)(Width - (_playingFieldTableLayoutPanel.Width * 1.1)), (int)(Height - (_playingFieldTableLayoutPanel.Height * 1.2)));
-        _playingFieldTableLayoutPanel.Name = "_playingFieldTableLayoutPanel";
-        _playingFieldTableLayoutPanel.TabIndex = 6;
-        _playingFieldTableLayoutPanel.CellBorderStyle = TableLayoutPanelCellBorderStyle.None;
-        _playingFieldTableLayoutPanel.Padding = new Padding(0);
-        _playingFieldTableLayoutPanel.Margin = new Padding(5);
-        // Continues in the InitializePlacementFieldWithData method
-
-        ((System.ComponentModel.ISupportInitialize)_shipSizeNumericUpDown).EndInit();
-        ResumeLayout(false);
-        PerformLayout();
-    }
-
     private void InitializePlayingFieldWithData()
     {
-        _playingFieldTableLayoutPanel.RowCount = PlayingFieldGridSize + 1;
+        _playingFieldTableLayoutPanel.ColumnStyles.Clear();
+        _playingFieldTableLayoutPanel.RowStyles.Clear();
+
         _playingFieldTableLayoutPanel.ColumnCount = PlayingFieldGridSize + 1;
+        _playingFieldTableLayoutPanel.RowCount = PlayingFieldGridSize + 1;
 
         for (int i = 0; i < PlayingFieldGridSize + 1; i++)
         {
-            _playingFieldTableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, _playingFieldTableLayoutPanel.Width / _playingFieldTableLayoutPanel.ColumnCount));
+            _playingFieldTableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, _playingFieldTableLayoutPanel.Size.Width / _playingFieldTableLayoutPanel.ColumnCount));
         }
         for (int i = 0; i < PlayingFieldGridSize + 1; i++)
         {
-            _playingFieldTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, _playingFieldTableLayoutPanel.Height / _playingFieldTableLayoutPanel.RowCount));
+            _playingFieldTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, _playingFieldTableLayoutPanel.Size.Height / _playingFieldTableLayoutPanel.RowCount));
         }
 
         InitializePlayingFieldHorizontalNamingLabel();
@@ -315,7 +188,7 @@ public partial class ShipPlacementForm : Form, IShipPlacementView
         }
     }
 
-    private void CompletePlacementClicked(object? sender,  EventArgs e)
+    private void CompletePlacementButton_Click(object? sender, EventArgs e)
     {
         OnCompletePlacementClicked?.Invoke();
     }

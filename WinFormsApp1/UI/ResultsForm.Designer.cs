@@ -28,13 +28,50 @@
         /// </summary>
         private void InitializeComponent()
         {
+            _playerWinLabel = new Label();
+            _shotCountLabel = new Label();
+            _backToMenuButton = new Button();
             SuspendLayout();
+            // 
+            // _playerWinLabel
+            // 
+            _playerWinLabel.AutoSize = true;
+            _playerWinLabel.Font = new Font("Cascadia Code", 12F);
+            _playerWinLabel.Location = new Point(173, 135);
+            _playerWinLabel.Name = "_playerWinLabel";
+            _playerWinLabel.Size = new Size(127, 21);
+            _playerWinLabel.TabIndex = 0;
+            _playerWinLabel.Text = "Player № win!";
+            // 
+            // _shotCountLabel
+            // 
+            _shotCountLabel.AutoSize = true;
+            _shotCountLabel.Font = new Font("Cascadia Code", 12F);
+            _shotCountLabel.Location = new Point(173, 216);
+            _shotCountLabel.Name = "_shotCountLabel";
+            _shotCountLabel.Size = new Size(109, 21);
+            _shotCountLabel.TabIndex = 1;
+            _shotCountLabel.Text = "Shot count:";
+            // 
+            // _backToMenuButton
+            // 
+            _backToMenuButton.Enabled = false;
+            _backToMenuButton.Font = new Font("Cascadia Code", 12F, FontStyle.Regular, GraphicsUnit.Point, 204);
+            _backToMenuButton.Location = new Point(290, 397);
+            _backToMenuButton.Name = "_backToMenuButton";
+            _backToMenuButton.Size = new Size(200, 30);
+            _backToMenuButton.TabIndex = 2;
+            _backToMenuButton.Text = "Back to menu";
+            _backToMenuButton.UseVisualStyleBackColor = true;
             // 
             // ResultsForm
             // 
             AutoScaleDimensions = new SizeF(8F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(780, 457);
+            Controls.Add(_backToMenuButton);
+            Controls.Add(_shotCountLabel);
+            Controls.Add(_playerWinLabel);
             FormBorderStyle = FormBorderStyle.Fixed3D;
             Name = "ResultsForm";
             Padding = new Padding(5);
@@ -45,5 +82,9 @@
         }
 
         #endregion
+
+        private Label _playerWinLabel;
+        private Label _shotCountLabel;
+        private Button _backToMenuButton;
     }
 }

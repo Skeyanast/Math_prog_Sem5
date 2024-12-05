@@ -8,14 +8,6 @@ public partial class DemoModeForm : Form, IDemoModeView
 {
     private readonly ApplicationContext _context;
 
-    private readonly StatusStrip _statusStrip = new();
-    private readonly ToolStripLabel _currentShotNumberToolStripLabel = new();
-    private readonly Label _shotHistoryLabel = new();
-    private readonly Button _placeShipsButton = new();
-    private readonly Button _toResultsButton = new();
-    private readonly ListBox _shotHistoryListBox = new();
-    private readonly TableLayoutPanel _playingFieldTableLayoutPanel = new();
-
     public event Action<int, int>? OnPlayingFieldGridCellClicked;
     public event Action? OnPlaceShipsClicked;
     public event Action? OnToResultsClicked;
@@ -31,7 +23,8 @@ public partial class DemoModeForm : Form, IDemoModeView
         _context = context;
         InitializeComponent();
 
-        InitializeControls();
+        _placeShipsButton.Click += PlaceShipsButton_Click;
+        _toResultsButton.Click += ToResultsButton_Click;
 
         ShotsHistory.CollectionChanged += ShotsHistoryCollectionChanged;
     }
@@ -45,7 +38,7 @@ public partial class DemoModeForm : Form, IDemoModeView
 
     public void SetShotsFired(int number)
     {
-        _currentShotNumberToolStripLabel.Text = $"Shots fired: {number}";
+        _currentShotNumberToolStripStatusLabel.Text = $"Shots fired: {number}";
     }
 
     public void PlayingFieldGridInvalidate()
@@ -94,89 +87,21 @@ public partial class DemoModeForm : Form, IDemoModeView
         _toResultsButton.Visible = true;
     }
 
-    private void InitializeControls()
-    {
-        //
-        // _statusStrip
-        //
-        _statusStrip.Dock = DockStyle.Bottom;
-        _statusStrip.Padding = new Padding(2);
-        _statusStrip.LayoutStyle = ToolStripLayoutStyle.HorizontalStackWithOverflow;
-        //
-        // _currentShopNumberToolStripLabel
-        //
-        _currentShotNumberToolStripLabel.Name = "_currentShopNumberToolStripLabel";
-        _statusStrip.Items.Add(_currentShotNumberToolStripLabel);
-        Controls.Add(_statusStrip);
-        //
-        // _shotHistoryLabel
-        //
-        _shotHistoryLabel.AutoSize = true;
-        _shotHistoryLabel.Location = new Point(8, (int)(Height * 0.05));
-        _shotHistoryLabel.Name = "_shotHistoryLabel";
-        _shotHistoryLabel.Text = "History:";
-        Controls.Add(_shotHistoryLabel);
-
-        // 
-        // _placeShipsButton
-        // 
-        _placeShipsButton.Size = new Size(200, 30);
-        _placeShipsButton.Location = new Point((int)(Width * 0.1), (int)(Height * 0.65));
-        _placeShipsButton.Name = "_placeShipsButton";
-        _placeShipsButton.TabIndex = 0;
-        _placeShipsButton.Text = "Place ships";
-        _placeShipsButton.UseVisualStyleBackColor = true;
-        _placeShipsButton.Click += PlaceShipsButtonClicked;
-        Controls.Add(_placeShipsButton);
-        // 
-        // _toResultsButton
-        // 
-        _toResultsButton.Size = new Size(200, 30);
-        _toResultsButton.Location = new Point((int)(Width * 0.1), (int)(Height * 0.75));
-        _toResultsButton.Name = "_toResultsButton";
-        _toResultsButton.TabIndex = 1;
-        _toResultsButton.Text = "To results";
-        _toResultsButton.UseVisualStyleBackColor = true;
-        _toResultsButton.Visible = false;
-        _toResultsButton.Click += ToResultsButtonClicked;
-        Controls.Add(_toResultsButton);
-        // 
-        // _shotHistoryListBox
-        // 
-        _shotHistoryListBox.Size = new Size((int)(Width * 0.2), (int)(Height * 0.5));
-        _shotHistoryListBox.Location = new Point(12, (int)(Height * 0.1));
-        _shotHistoryListBox.FormattingEnabled = true;
-        _shotHistoryListBox.SelectionMode = SelectionMode.None;
-        _shotHistoryListBox.Name = "_shotHistoryListBox";
-        _shotHistoryListBox.TabIndex = 2;
-        Controls.Add(_shotHistoryListBox);
-        // 
-        // _playingFieldTableLayoutPanel
-        // 
-        _playingFieldTableLayoutPanel.Height = (int)(Height * 0.8);
-        _playingFieldTableLayoutPanel.Width = _playingFieldTableLayoutPanel.Height;
-        _playingFieldTableLayoutPanel.Location = new Point((int)(Width - (_playingFieldTableLayoutPanel.Width * 1.1)), (int)(Height - (_playingFieldTableLayoutPanel.Height + _playingFieldTableLayoutPanel.Height * 0.2)));
-        _playingFieldTableLayoutPanel.Name = "_playingFieldTableLayoutPanel";
-        _playingFieldTableLayoutPanel.TabIndex = 3;
-        _playingFieldTableLayoutPanel.CellBorderStyle = TableLayoutPanelCellBorderStyle.None;
-        _playingFieldTableLayoutPanel.Padding = new Padding(0);
-        _playingFieldTableLayoutPanel.Margin = new Padding(5);
-        _playingFieldTableLayoutPanel.Enabled = false;
-        // Continues in the InitializePlayingFieldWithData method
-    }
-
     private void InitializePlayingFieldWithData()
     {
-        _playingFieldTableLayoutPanel.RowCount = PlayingFieldGridSize + 1;
+        _playingFieldTableLayoutPanel.ColumnStyles.Clear();
+        _playingFieldTableLayoutPanel.RowStyles.Clear();
+
         _playingFieldTableLayoutPanel.ColumnCount = PlayingFieldGridSize + 1;
+        _playingFieldTableLayoutPanel.RowCount = PlayingFieldGridSize + 1;
 
         for (int i = 0; i < PlayingFieldGridSize + 1; i++)
         {
-            _playingFieldTableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, _playingFieldTableLayoutPanel.Width / _playingFieldTableLayoutPanel.ColumnCount));
+            _playingFieldTableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, _playingFieldTableLayoutPanel.Size.Width / _playingFieldTableLayoutPanel.ColumnCount));
         }
         for (int i = 0; i < PlayingFieldGridSize + 1; i++)
         {
-            _playingFieldTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, _playingFieldTableLayoutPanel.Height / _playingFieldTableLayoutPanel.RowCount));
+            _playingFieldTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, _playingFieldTableLayoutPanel.Size.Height / _playingFieldTableLayoutPanel.RowCount));
         }
 
         InitializePlayingFieldHorizontalNamingLabel();
@@ -236,14 +161,14 @@ public partial class DemoModeForm : Form, IDemoModeView
         }
     }
 
-    private void PlaceShipsButtonClicked(object? sender, EventArgs e)
+    private void PlaceShipsButton_Click(object? sender, EventArgs e)
     {
         OnPlaceShipsClicked?.Invoke();
         _placeShipsButton.Visible = false;
         _playingFieldTableLayoutPanel.Enabled = true;
     }
 
-    private void ToResultsButtonClicked(object? sender, EventArgs e)
+    private void ToResultsButton_Click(object? sender, EventArgs e)
     {
         OnToResultsClicked?.Invoke();
     }
