@@ -6,8 +6,8 @@ public partial class MainMenuForm : Form, IMainMenuView
 {
     private readonly ApplicationContext _context;
 
-    public event Action? DemoModeClicked;
-    public event Action? GameModeClicked;
+    public event Action? OnDemoModeClicked;
+    public event Action? OnGameModeClicked;
 
     public int PlayingFieldSize => Convert.ToInt32(_playingFieldSizeNumericUpDown.Value);
 
@@ -33,11 +33,11 @@ public partial class MainMenuForm : Form, IMainMenuView
 
     private void StartDemoModeButton_Click(object? sender,  EventArgs e)
     {
-        DemoModeClicked?.Invoke();
+        OnDemoModeClicked?.Invoke();
     }
 
     private void StartGameModeButton_Click(Object? sender, EventArgs e)
     {
-        GameModeClicked?.Invoke();
+        OnGameModeClicked?.Invoke();
     }
 }

@@ -108,6 +108,11 @@ public partial class ShipPlacementForm : Form, IShipPlacementView
         _shipPlacementPointsToolStripStatusLabel.Text = $"Ship creation points: {remainingPoints} / {maxPoints}";
     }
 
+    public void SetPlayerNumber(int playerNumber)
+    {
+        Text = $"Player {playerNumber} Ship Placement";
+    }
+
     public void FinishPlacement()
     {
         _playingFieldTableLayoutPanel.Enabled = false;

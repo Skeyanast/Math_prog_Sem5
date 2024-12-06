@@ -73,7 +73,7 @@
             // 
             // _placeShipsButton
             // 
-            _placeShipsButton.Location = new Point(174, 53);
+            _placeShipsButton.Location = new Point(182, 53);
             _placeShipsButton.Name = "_placeShipsButton";
             _placeShipsButton.Size = new Size(200, 30);
             _placeShipsButton.TabIndex = 3;
@@ -82,7 +82,7 @@
             // 
             // _toResultsButton
             // 
-            _toResultsButton.Location = new Point(174, 367);
+            _toResultsButton.Location = new Point(182, 367);
             _toResultsButton.Name = "_toResultsButton";
             _toResultsButton.Size = new Size(200, 30);
             _toResultsButton.TabIndex = 4;

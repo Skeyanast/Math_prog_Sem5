@@ -82,7 +82,6 @@
             // 
             // _startGameModeButton
             // 
-            _startGameModeButton.Enabled = false;
             _startGameModeButton.Font = new Font("Cascadia Code", 12F, FontStyle.Regular, GraphicsUnit.Point, 204);
             _startGameModeButton.Location = new Point(297, 375);
             _startGameModeButton.Name = "_startGameModeButton";
@@ -105,7 +104,7 @@
             Name = "MainMenuForm";
             Padding = new Padding(5);
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "MainMenu";
+            Text = "Main Menu";
             ((System.ComponentModel.ISupportInitialize)_playingFieldSizeNumericUpDown).EndInit();
             ResumeLayout(false);
             PerformLayout();

@@ -9,7 +9,7 @@ public class ResultsPresenter : BasePresenter<IResultsView, ResultsPresenterRunA
     public ResultsPresenter(IResultsView view, IApplicationController controller)
         : base(view, controller)
     {
-        View.OnReturnToMainMenuClicked += BackToMainMenuWindow;
+        View.OnReturnToMainMenuClicked += OnReturnToMainMenuClicked;
     }
 
     public override void Run(ResultsPresenterRunArgs args)
@@ -20,7 +20,7 @@ public class ResultsPresenter : BasePresenter<IResultsView, ResultsPresenterRunA
         View.Show();
     }
 
-    private void BackToMainMenuWindow()
+    private void OnReturnToMainMenuClicked()
     {
         Controller.Run<MainMenuPresenter>();
         View.Close();

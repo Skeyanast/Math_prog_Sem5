@@ -1,5 +1,4 @@
-﻿using System.Data.Common;
-using WinFormsApp1.DomainModel;
+﻿using WinFormsApp1.DomainModel;
 using WinFormsApp1.Presentation.Common;
 using WinFormsApp1.Presentation.Presenters.RunArguments;
 using WinFormsApp1.Presentation.Views;
@@ -16,8 +15,8 @@ public class ShipPlacementPresenter : BasePresenter<IShipPlacementView, ShipPlac
     public ShipPlacementPresenter(IShipPlacementView view, IApplicationController controller)
         : base(view, controller)
     {
-        View.OnPlaceShipGridCellClicked += PlaceShipOnGridCell;
-        View.OnCompletePlacementClicked += CompletePlacement;
+        View.OnPlaceShipGridCellClicked += HandlePlaceShipOnGridCell;
+        View.OnCompletePlacementClicked += OnCompletePlacementClicked;
     }
 
     public override void Run(ShipPlacementPresenterRunArgs args)
@@ -35,6 +34,7 @@ public class ShipPlacementPresenter : BasePresenter<IShipPlacementView, ShipPlac
             .ToList();
         View.PlayingFieldGridCellStatuses = _playingField.CellStatuses;
         View.SetRemainingPlacementPoints(_playingField.RemainingShipPoints, _playingField.MaxShipPoints);
+        View.SetPlayerNumber(_playerNumber);
 
         UpdatePlayingField();
 
@@ -46,7 +46,7 @@ public class ShipPlacementPresenter : BasePresenter<IShipPlacementView, ShipPlac
         View.PlacementFieldGridInvalidate();
     }
 
-    private void PlaceShipOnGridCell(int row, int column)
+    private void HandlePlaceShipOnGridCell(int row, int column)
     {
         ShipPlacementResult shipPlacementResult = _playingField.PlaceShip((row, column), View.ShipOrientation, View.ShipSize);
         View.ProcessShipCreationResult(shipPlacementResult);
@@ -65,7 +65,7 @@ public class ShipPlacementPresenter : BasePresenter<IShipPlacementView, ShipPlac
         }
     }
 
-    private void CompletePlacement()
+    private void OnCompletePlacementClicked()
     {
         _placeShipsCallback?.Invoke(_playerNumber, _playingField);
         View.Close();

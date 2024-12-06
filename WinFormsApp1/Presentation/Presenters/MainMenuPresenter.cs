@@ -15,11 +15,11 @@ public class MainMenuPresenter : BasePresenter<IMainMenuView>
         : base(view, controller)
     {
 
-        View.DemoModeClicked += () => LoadMode(View.PlayingFieldSize, DemoModeRunCommand);
-        View.GameModeClicked += () => LoadMode(View.PlayingFieldSize, GameModeRunCommand);
+        View.OnDemoModeClicked += () => HandleLoadMode(View.PlayingFieldSize, DemoModeRunCommand);
+        View.OnGameModeClicked += () => HandleLoadMode(View.PlayingFieldSize, GameModeRunCommand);
     }
 
-    private void LoadMode(int playingFieldSize, ModeRunCommand runCommand)
+    private void HandleLoadMode(int playingFieldSize, ModeRunCommand runCommand)
     {
         if (ValidatePlayingFieldSize(playingFieldSize))
         {
@@ -44,6 +44,7 @@ public class MainMenuPresenter : BasePresenter<IMainMenuView>
 
     private bool ValidatePlayingFieldSize(int playingFieldSize)
     {
-        return playingFieldSize >= _playingFieldSizeMinValue && playingFieldSize <= _playingFieldSizeMaxValue;
+        return playingFieldSize >= _playingFieldSizeMinValue &&
+            playingFieldSize <= _playingFieldSizeMaxValue;
     }
 }

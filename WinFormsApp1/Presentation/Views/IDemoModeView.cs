@@ -6,7 +6,7 @@ namespace WinFormsApp1.Presentation.Views;
 
 public interface IDemoModeView : IView
 {
-    event Action<int, int>? OnPlayingFieldGridCellClicked;
+    event Action<int, int>? OnPlayingFieldCellClicked;
     event Action? OnPlaceShipsClicked;
     event Action? OnToResultsClicked;
 

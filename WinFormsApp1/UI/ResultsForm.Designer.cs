@@ -37,7 +37,7 @@
             // 
             _playerWinLabel.AutoSize = true;
             _playerWinLabel.Font = new Font("Cascadia Code", 12F);
-            _playerWinLabel.Location = new Point(173, 135);
+            _playerWinLabel.Location = new Point(120, 90);
             _playerWinLabel.Name = "_playerWinLabel";
             _playerWinLabel.Size = new Size(127, 21);
             _playerWinLabel.TabIndex = 0;
@@ -47,7 +47,7 @@
             // 
             _shotCountLabel.AutoSize = true;
             _shotCountLabel.Font = new Font("Cascadia Code", 12F);
-            _shotCountLabel.Location = new Point(173, 216);
+            _shotCountLabel.Location = new Point(120, 151);
             _shotCountLabel.Name = "_shotCountLabel";
             _shotCountLabel.Size = new Size(109, 21);
             _shotCountLabel.TabIndex = 1;
@@ -76,7 +76,7 @@
             Name = "ResultsForm";
             Padding = new Padding(5);
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "Results";
+            Text = "Battle Results";
             ResumeLayout(false);
             PerformLayout();
         }

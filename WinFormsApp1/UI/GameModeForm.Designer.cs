@@ -29,107 +29,96 @@
         private void InitializeComponent()
         {
             _statusStrip = new StatusStrip();
-            currentShotNumberToolStripLabel = new ToolStripStatusLabel();
-            _shotHistoryLabel = new ListBox();
+            _currentShotNumberToolStripLabel = new ToolStripStatusLabel();
+            _shotHistoryListBox = new ListBox();
             _currentTurnLabel = new Label();
-            _firstPlayerPlaceShipsButton = new Button();
-            _secondPlayerPlaceShipsButton = new Button();
+            _placeShipsButton = new Button();
             _toResultsButton = new Button();
-            _firstPlayerPlayingFieldTableLayoutPanel = new TableLayoutPanel();
-            _secondPlayerPlayingFieldTableLayoutPanel = new TableLayoutPanel();
+            _player1PlayingFieldTableLayoutPanel = new TableLayoutPanel();
+            _player2PlayingFieldTableLayoutPanel = new TableLayoutPanel();
             _statusStrip.SuspendLayout();
             SuspendLayout();
             // 
             // _statusStrip
             // 
-            _statusStrip.Items.AddRange(new ToolStripItem[] { currentShotNumberToolStripLabel });
+            _statusStrip.Items.AddRange(new ToolStripItem[] { _currentShotNumberToolStripLabel });
             _statusStrip.Location = new Point(5, 430);
             _statusStrip.Name = "_statusStrip";
             _statusStrip.Size = new Size(770, 22);
             _statusStrip.TabIndex = 7;
             _statusStrip.Text = "_statusStrip";
             // 
-            // currentShotNumberToolStripLabel
+            // _currentShotNumberToolStripLabel
             // 
-            currentShotNumberToolStripLabel.Name = "currentShotNumberToolStripLabel";
-            currentShotNumberToolStripLabel.Size = new Size(187, 17);
-            currentShotNumberToolStripLabel.Text = "currentShotNumberToolStripLabel";
+            _currentShotNumberToolStripLabel.Name = "_currentShotNumberToolStripLabel";
+            _currentShotNumberToolStripLabel.Size = new Size(0, 17);
             // 
-            // _shotHistoryLabel
+            // _shotHistoryListBox
             // 
-            _shotHistoryLabel.FormattingEnabled = true;
-            _shotHistoryLabel.ItemHeight = 17;
-            _shotHistoryLabel.Location = new Point(277, 8);
-            _shotHistoryLabel.Name = "_shotHistoryLabel";
-            _shotHistoryLabel.SelectionMode = SelectionMode.None;
-            _shotHistoryLabel.Size = new Size(223, 55);
-            _shotHistoryLabel.TabIndex = 0;
+            _shotHistoryListBox.FormattingEnabled = true;
+            _shotHistoryListBox.ItemHeight = 17;
+            _shotHistoryListBox.Location = new Point(244, 8);
+            _shotHistoryListBox.Name = "_shotHistoryListBox";
+            _shotHistoryListBox.SelectionMode = SelectionMode.None;
+            _shotHistoryListBox.Size = new Size(290, 72);
+            _shotHistoryListBox.TabIndex = 0;
             // 
             // _currentTurnLabel
             // 
-            _currentTurnLabel.Location = new Point(277, 67);
+            _currentTurnLabel.Location = new Point(318, 95);
             _currentTurnLabel.Name = "_currentTurnLabel";
-            _currentTurnLabel.Size = new Size(223, 23);
+            _currentTurnLabel.Size = new Size(149, 23);
             _currentTurnLabel.TabIndex = 1;
-            _currentTurnLabel.Text = "'s player turn";
             _currentTurnLabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
-            // _firstPlayerPlaceShipsButton
+            // _placeShipsButton
             // 
-            _firstPlayerPlaceShipsButton.Location = new Point(60, 57);
-            _firstPlayerPlaceShipsButton.Name = "_firstPlayerPlaceShipsButton";
-            _firstPlayerPlaceShipsButton.Size = new Size(200, 30);
-            _firstPlayerPlaceShipsButton.TabIndex = 2;
-            _firstPlayerPlaceShipsButton.Text = "Place ships";
-            _firstPlayerPlaceShipsButton.UseVisualStyleBackColor = true;
-            // 
-            // _secondPlayerPlaceShipsButton
-            // 
-            _secondPlayerPlaceShipsButton.Location = new Point(525, 57);
-            _secondPlayerPlaceShipsButton.Name = "_secondPlayerPlaceShipsButton";
-            _secondPlayerPlaceShipsButton.Size = new Size(200, 30);
-            _secondPlayerPlaceShipsButton.TabIndex = 3;
-            _secondPlayerPlaceShipsButton.Text = "Place ships";
-            _secondPlayerPlaceShipsButton.UseVisualStyleBackColor = true;
+            _placeShipsButton.Location = new Point(10, 34);
+            _placeShipsButton.Name = "_placeShipsButton";
+            _placeShipsButton.Size = new Size(200, 30);
+            _placeShipsButton.TabIndex = 2;
+            _placeShipsButton.Text = "Place ships";
+            _placeShipsButton.UseVisualStyleBackColor = true;
             // 
             // _toResultsButton
             // 
-            _toResultsButton.Location = new Point(291, 397);
+            _toResultsButton.Location = new Point(572, 34);
             _toResultsButton.Name = "_toResultsButton";
             _toResultsButton.Size = new Size(200, 30);
             _toResultsButton.TabIndex = 4;
             _toResultsButton.Text = "Finish game";
             _toResultsButton.UseVisualStyleBackColor = true;
+            _toResultsButton.Visible = false;
             // 
-            // _firstPlayerPlayingFieldTableLayoutPanel
+            // _player1PlayingFieldTableLayoutPanel
             // 
-            _firstPlayerPlayingFieldTableLayoutPanel.ColumnCount = 2;
-            _firstPlayerPlayingFieldTableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-            _firstPlayerPlayingFieldTableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-            _firstPlayerPlayingFieldTableLayoutPanel.Enabled = false;
-            _firstPlayerPlayingFieldTableLayoutPanel.Location = new Point(10, 95);
-            _firstPlayerPlayingFieldTableLayoutPanel.Margin = new Padding(5);
-            _firstPlayerPlayingFieldTableLayoutPanel.Name = "_firstPlayerPlayingFieldTableLayoutPanel";
-            _firstPlayerPlayingFieldTableLayoutPanel.RowCount = 2;
-            _firstPlayerPlayingFieldTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            _firstPlayerPlayingFieldTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            _firstPlayerPlayingFieldTableLayoutPanel.Size = new Size(300, 300);
-            _firstPlayerPlayingFieldTableLayoutPanel.TabIndex = 5;
+            _player1PlayingFieldTableLayoutPanel.ColumnCount = 2;
+            _player1PlayingFieldTableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            _player1PlayingFieldTableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            _player1PlayingFieldTableLayoutPanel.Enabled = false;
+            _player1PlayingFieldTableLayoutPanel.Location = new Point(10, 88);
+            _player1PlayingFieldTableLayoutPanel.Margin = new Padding(5);
+            _player1PlayingFieldTableLayoutPanel.Name = "_player1PlayingFieldTableLayoutPanel";
+            _player1PlayingFieldTableLayoutPanel.RowCount = 2;
+            _player1PlayingFieldTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            _player1PlayingFieldTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            _player1PlayingFieldTableLayoutPanel.Size = new Size(330, 330);
+            _player1PlayingFieldTableLayoutPanel.TabIndex = 5;
             // 
-            // _secondPlayerPlayingFieldTableLayoutPanel
+            // _player2PlayingFieldTableLayoutPanel
             // 
-            _secondPlayerPlayingFieldTableLayoutPanel.ColumnCount = 2;
-            _secondPlayerPlayingFieldTableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-            _secondPlayerPlayingFieldTableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-            _secondPlayerPlayingFieldTableLayoutPanel.Enabled = false;
-            _secondPlayerPlayingFieldTableLayoutPanel.Location = new Point(475, 95);
-            _secondPlayerPlayingFieldTableLayoutPanel.Margin = new Padding(5);
-            _secondPlayerPlayingFieldTableLayoutPanel.Name = "_secondPlayerPlayingFieldTableLayoutPanel";
-            _secondPlayerPlayingFieldTableLayoutPanel.RowCount = 2;
-            _secondPlayerPlayingFieldTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            _secondPlayerPlayingFieldTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            _secondPlayerPlayingFieldTableLayoutPanel.Size = new Size(300, 300);
-            _secondPlayerPlayingFieldTableLayoutPanel.TabIndex = 6;
+            _player2PlayingFieldTableLayoutPanel.ColumnCount = 2;
+            _player2PlayingFieldTableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            _player2PlayingFieldTableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            _player2PlayingFieldTableLayoutPanel.Enabled = false;
+            _player2PlayingFieldTableLayoutPanel.Location = new Point(440, 88);
+            _player2PlayingFieldTableLayoutPanel.Margin = new Padding(5);
+            _player2PlayingFieldTableLayoutPanel.Name = "_player2PlayingFieldTableLayoutPanel";
+            _player2PlayingFieldTableLayoutPanel.RowCount = 2;
+            _player2PlayingFieldTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            _player2PlayingFieldTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            _player2PlayingFieldTableLayoutPanel.Size = new Size(330, 330);
+            _player2PlayingFieldTableLayoutPanel.TabIndex = 6;
             // 
             // GameModeForm
             // 
@@ -137,19 +126,18 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(780, 457);
             Controls.Add(_statusStrip);
-            Controls.Add(_secondPlayerPlayingFieldTableLayoutPanel);
-            Controls.Add(_firstPlayerPlayingFieldTableLayoutPanel);
+            Controls.Add(_player2PlayingFieldTableLayoutPanel);
+            Controls.Add(_player1PlayingFieldTableLayoutPanel);
             Controls.Add(_toResultsButton);
-            Controls.Add(_secondPlayerPlaceShipsButton);
-            Controls.Add(_firstPlayerPlaceShipsButton);
+            Controls.Add(_placeShipsButton);
             Controls.Add(_currentTurnLabel);
-            Controls.Add(_shotHistoryLabel);
+            Controls.Add(_shotHistoryListBox);
             DoubleBuffered = true;
             FormBorderStyle = FormBorderStyle.Fixed3D;
             Name = "GameModeForm";
             Padding = new Padding(5);
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "GameModeForm";
+            Text = "Sea Battle Game";
             _statusStrip.ResumeLayout(false);
             _statusStrip.PerformLayout();
             ResumeLayout(false);
@@ -159,13 +147,12 @@
         #endregion
 
         private StatusStrip _statusStrip;
-        private ToolStripStatusLabel currentShotNumberToolStripLabel;
-        private ListBox _shotHistoryLabel;
+        private ToolStripStatusLabel _currentShotNumberToolStripLabel;
+        private ListBox _shotHistoryListBox;
         private Label _currentTurnLabel;
-        private Button _firstPlayerPlaceShipsButton;
-        private Button _secondPlayerPlaceShipsButton;
+        private Button _placeShipsButton;
         private Button _toResultsButton;
-        private TableLayoutPanel _firstPlayerPlayingFieldTableLayoutPanel;
-        private TableLayoutPanel _secondPlayerPlayingFieldTableLayoutPanel;
+        private TableLayoutPanel _player1PlayingFieldTableLayoutPanel;
+        private TableLayoutPanel _player2PlayingFieldTableLayoutPanel;
     }
 }

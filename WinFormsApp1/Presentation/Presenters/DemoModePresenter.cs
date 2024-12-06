@@ -13,9 +13,9 @@ public class DemoModePresenter : BasePresenter<IDemoModeView, DemoModePresenterR
     public DemoModePresenter(IDemoModeView view, IApplicationController controller)
         : base(view, controller)
     {
-        View.OnPlayingFieldGridCellClicked += OnFieldCellClicked;
-        View.OnPlaceShipsClicked += OpenShipPlacementModalWindow;
-        View.OnToResultsClicked += GoToResultsWindow;
+        View.OnPlayingFieldCellClicked += HandleFieldCellClicked;
+        View.OnPlaceShipsClicked += OnPlaceShipsClicked;
+        View.OnToResultsClicked += OnToResultsClicked;
     }
 
     public override void Run(DemoModePresenterRunArgs args)
@@ -41,7 +41,7 @@ public class DemoModePresenter : BasePresenter<IDemoModeView, DemoModePresenterR
         View.PlayingFieldGridInvalidate();
     }
 
-    private void OnFieldCellClicked(int row, int column)
+    private void HandleFieldCellClicked(int row, int column)
     {
         bool isHitted = _playingField.Shoot((row, column));
         View.PlayingFieldGridCellStatuses = _playingField.CellStatuses;
@@ -50,13 +50,14 @@ public class DemoModePresenter : BasePresenter<IDemoModeView, DemoModePresenterR
         _currentShotNumber++;
         View.SetShotsFired(_currentShotNumber);
         View.ShotsHistory.Add($"Shot {_currentShotNumber}: {_playingField.HorizontalNaming[column]}{_playingField.VerticalNaming[row]}; {(isHitted ? "Hit" : "Miss")}");
+        
         if (_playingField.AllShipsDestroyed)
         {
             View.FinishGame();
         }
     }
 
-    private void OpenShipPlacementModalWindow()
+    private void OnPlaceShipsClicked()
     {
         Controller.Run<ShipPlacementPresenter, ShipPlacementPresenterRunArgs>(
             new ShipPlacementPresenterRunArgs(
@@ -67,7 +68,7 @@ public class DemoModePresenter : BasePresenter<IDemoModeView, DemoModePresenterR
         UpdatePlayingField();
     }
 
-    private void GoToResultsWindow()
+    private void OnToResultsClicked()
     {
         Controller.Run<ResultsPresenter, ResultsPresenterRunArgs>(new ResultsPresenterRunArgs(1, _currentShotNumber));
         View.Close();

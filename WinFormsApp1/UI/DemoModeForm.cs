@@ -8,7 +8,7 @@ public partial class DemoModeForm : Form, IDemoModeView
 {
     private readonly ApplicationContext _context;
 
-    public event Action<int, int>? OnPlayingFieldGridCellClicked;
+    public event Action<int, int>? OnPlayingFieldCellClicked;
     public event Action? OnPlaceShipsClicked;
     public event Action? OnToResultsClicked;
 
@@ -156,7 +156,7 @@ public partial class DemoModeForm : Form, IDemoModeView
             cellButton.Dock = DockStyle.Fill;
             cellButton.Margin = new Padding(0);
             cellButton.TabStop = false;
-            cellButton.Click += (sender, e) => OnPlayingFieldGridCellClicked?.Invoke(row - 1, column - 1);
+            cellButton.Click += (sender, e) => OnPlayingFieldCellClicked?.Invoke(row - 1, column - 1);
             _playingFieldTableLayoutPanel.Controls.Add(cellButton, column, row);
         }
     }

@@ -20,5 +20,6 @@ public interface IShipPlacementView : IView
     void PlacementFieldGridInvalidate();
     void ProcessShipCreationResult(ShipPlacementResult shipPlacementResult);
     void SetRemainingPlacementPoints(int remainingPoints, int maxPoints);
+    void SetPlayerNumber(int playerNumber);
     void FinishPlacement();
 }
